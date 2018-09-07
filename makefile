@@ -14,8 +14,8 @@ da.o : da.c da.h
 	$(CC) $(OOPTS) da.c
 cda.o : cda.c cda.h
 	$(CC) $(OOPTS) cda.c
-test-da.o : test-da.c da.h
-	$(CC) $(OOPTS) test-da.c
+test-da.o : da.c da.h
+	$(CC) $(OOPTS) da.c
 test-cda.o : test-cda.c cda.h
 	$(CC) $(OOPTS) test-cda.c
 test : test-da
