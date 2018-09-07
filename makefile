@@ -1,26 +1,26 @@
 CC = gcc
 OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
-DAOBJS = da.o test-da.o integer.o
+DAOBJS = da.o da-test.o integer.o
 CDAOBJS = cda.o test-cda.o integer.o
 
-all : test-da test-cda
+all : da cda
 
-test-da : $(DAOBJS)
-	$(CC) $(LOPTS) $(DAOBJS) -o test-da
-test-cda : $(CDAOBJS)
-	$(CC) $(LOPTS) $(CDAOBJS) -o test-cda
+da : $(DAOBJS)
+	$(CC) $(LOPTS) $(DAOBJS) -o da
+cda : $(CDAOBJS)
+	$(CC) $(LOPTS) $(CDAOBJS) -o cda
 da.o : da.c da.h
 	$(CC) $(OOPTS) da.c
 cda.o : cda.c cda.h
 	$(CC) $(OOPTS) cda.c
-test-da.o : da.c da.h
-	$(CC) $(OOPTS) da.c
+da-test.o : da.c da.h
+	$(CC) $(OOPTS) da-test.c
 test-cda.o : test-cda.c cda.h
 	$(CC) $(OOPTS) test-cda.c
-test : test-da
-	./test-da
-valgrind : test-da
-	valgrind --leak-check=full ./test-da
+test : da
+	./da
+valgrind : da
+	valgrind --leak-check=full ./da
 clean :
-	rm -f $(OBJS) $(CDAOBJS) test-da test-cda
+	rm -f $(OBJS) $(CDAOBJS) da cda
