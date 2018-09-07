@@ -40,7 +40,7 @@ extern DA * newDA(void) {
     array->debugVal = 0;
     array->freeMethod = 0;
     array->displayMethod = 0;
-    
+
     return array;
 }
 
@@ -82,11 +82,11 @@ static DA * doubleArray(DA * items) {
     assert(newArray->storage != 0);
     unionDA(newArray, items);
     freeDA(items);*/
-    
+
     items->capacity = (items->capacity) * 2;
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
-    
+
     return items;
 }
 
@@ -101,7 +101,7 @@ extern void * removeDA(DA * items, int index) {
     items->size -= 1;
     assert(sizeDA(items) > 0);
     if ((sizeDA(items)/((double)capacityDA(items))) < .25) { items = halveArray(items); }
-    
+
     return val;
 }
 
@@ -114,12 +114,12 @@ static DA * halveArray(DA * items) {
     assert(newArray->storage != 0);
     unionDA(newArray, items);
     freeDA(items);*/
-    
+
     items->capacity = (items->capacity) / 2;
     assert(items->capacity >= 1);
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
-    
+
     return items;
 }
 
@@ -146,7 +146,7 @@ extern void * setDA(DA * items, int index, void * value) {
         return val;
     }
     items->storage[index] = value;
-    
+
     return val;
 }
 
@@ -203,7 +203,7 @@ extern void displayDA(DA * items, FILE *fp) {
 extern int debugDA(DA * items, int level) {
     int prevVal = items->debugVal;
     items->debugVal = level;
-    
+
     return prevVal;
 }
 
