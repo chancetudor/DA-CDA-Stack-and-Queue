@@ -12,36 +12,36 @@
 #include <assert.h>
 #include "da.h"
 
-static DA * doubleArray(DA * items);
-static DA * halveArray(DA * items);
+static void doubleArray(DA * items);
+static void halveArray(DA * items);
 static int capacityDA(DA * items);
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in DA struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in DA struct
 
 struct da {
-    void * (*storage);
-    int capacity;
-    int size;
-    int index;
-    int debugVal;
-    FM freeMethod;
-    DM displayMethod;
+  void * (*storage);
+  int capacity;
+  int size;
+  int index;
+  int debugVal;
+  FM freeMethod;
+  DM displayMethod;
 };
 
 // constructor; returns new, initialized dynamic array object
 extern DA * newDA(void) {
-    DA * array = malloc(sizeof(DA));
-    assert(array != 0);
-    array->capacity = 1;
-    array->storage = malloc(sizeof(void *) * array->capacity);
-    assert(array->storage != 0);
-    array->size = 0;
-    array->index = -1;
-    array->debugVal = 0;
-    array->freeMethod = 0;
-    array->displayMethod = 0;
+  DA * array = malloc(sizeof(DA));
+  assert(array != 0);
+  array->capacity = 1;
+  array->storage = malloc(sizeof(void *) * array->capacity);
+  assert(array->storage != 0);
+  array->size = 0;
+  array->index = -1;
+  array->debugVal = 0;
+  array->freeMethod = 0;
+  array->displayMethod = 0;
 
-    return array;
+  return array;
 }
 
 // method is passed a function able to display element in generic array slot
@@ -54,40 +54,37 @@ extern void setDAfree(DA * items, void (*free)(void * ptr)) { items->freeMethod 
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
     assert(index >= 0 && index <= sizeDA(items));
-    if ((capacityDA(items) - sizeDA(items)) < 1) {
-        items = doubleArray(items);
-    }
+    //if ((capacityDA(items) - sizeDA(items)) < 1) { doubleArray(items); }
+    if (capacityDA(items) == sizeDA(items)) { doubleArray(items); }
     if (index == sizeDA(items)) {
-        items->storage[index] = value;
-        items->size += 1;
+      items->storage[index] = value;
+      items->size += 1;
     }
     else {
-        void * (*temp) = getDA(items, sizeDA(items) - 1);
-        for (int i = sizeDA(items) - 1; i >= index; i--) {
-            items->storage[i + 1] = temp;
-            temp = items->storage[i + 1];
-            items->storage[i + 1] = items->storage[i];
-        }
-        items->storage[index] = value;
-        items->size += 1;
+      void * (*temp) = getDA(items, sizeDA(items) - 1);
+      for (int i = sizeDA(items) - 1; i >= index; i--) {
+        items->storage[i + 1] = temp;
+        temp = items->storage[i + 1];
+        items->storage[i + 1] = items->storage[i];
+      }
+      items->storage[index] = value;
+      items->size += 1;
     }
 }
 
 // method doubles array capacity and reallocates memory for new capacity
-static DA * doubleArray(DA * items) {
-    /*DA * newArray = newDA();
-    newArray->capacity = items->capacity * 2;
-    assert(newArray->capacity >= 1);
-    newArray->storage = malloc(sizeof(void *) * newArray->capacity);
-    assert(newArray->storage != 0);
-    unionDA(newArray, items);
-    freeDA(items);*/
+static void doubleArray(DA * items) {
+    /*int newCap = (items->capacity) * 2;
+    void * (*newArray) = realloc(items->storage, sizeof(void *) * items->capacity);
+    assert(newArray != 0);
+    items->storage = newArray;
+    items->capacity = newCap;*/
 
     items->capacity = (items->capacity) * 2;
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
 
-    return items;
+    //return items;
 }
 
 // method removes item at the given index
@@ -100,27 +97,27 @@ extern void * removeDA(DA * items, int index) {
     items->storage[sizeDA(items) - 1] = temp;
     items->size -= 1;
     assert(sizeDA(items) > 0);
-    if ((sizeDA(items)/((double)capacityDA(items))) < .25) { items = halveArray(items); }
+    if ((sizeDA(items)/((double)capacityDA(items))) < .25) { halveArray(items); }
 
     return val;
 }
 
 // method halves array capacity and reallocates memory for new capacity
-static DA * halveArray(DA * items) {
-    /*DA * newArray = newDA();
-    newArray->capacity = items->capacity / 2;
-    assert(newArray->capacity >= 1);
-    newArray->storage = malloc(sizeof(void *) * newArray->capacity);
-    assert(newArray->storage != 0);
-    unionDA(newArray, items);
-    freeDA(items);*/
+static void halveArray(DA * items) {
+    /*int newCap = (items->capacity) / 2;
+    assert(newCap >= 1);
+    void * (*newArray) = realloc(items->storage, sizeof(void *) * items->capacity);
+    assert(newArray != 0);
+
+    items->storage = newArray;
+    items->capacity = newCap;*/
 
     items->capacity = (items->capacity) / 2;
     assert(items->capacity >= 1);
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
 
-    return items;
+    //return items;
 }
 
 // method moves all items in donor array to recipient array
@@ -142,8 +139,8 @@ extern void * getDA(DA * items, int index) {
 extern void * setDA(DA * items, int index, void * value) {
     void * (*val) = getDA(items, index);
     if (index == sizeDA(items)) {
-        insertDA(items, index, value);
-        return val;
+      insertDA(items, index, value);
+      return val;
     }
     items->storage[index] = value;
 
@@ -162,40 +159,40 @@ static int capacityDA(DA * items) { return items->capacity; }
 // an empty array with capacity 1 displays as [[1]]
 extern void displayDA(DA * items, FILE *fp) {
     if ((sizeDA(items) == 0) && (items->debugVal > 0)) { // empty array and method should display num. empty indeces
-        fprintf(fp, "[[%d]]", items->capacity);
+      fprintf(fp, "[[%d]]", items->capacity);
     }
     else if ((sizeDA(items) == 0) && (items->debugVal == 0)) { // empty array and method should not display num. empty indeces
-        fprintf(fp, "[]");
+      fprintf(fp, "[]");
     }
     else if ((items->displayMethod == 0) && (items->debugVal > 0)) { // no display method set and method should display num. empty indeces
-        fprintf(fp, "[");
-        for (int i = 0; i < sizeDA(items); i++) {
-            fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
-        }
-        fprintf(fp, "[%d]]", (capacityDA(items) - sizeDA(items)));
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      }
+      fprintf(fp, "[%d]]", (capacityDA(items) - sizeDA(items)));
     }
     else if ((items->displayMethod == 0) && (items->debugVal == 0)) { // no display method set and method should not display num. empty indeces
-        fprintf(fp, "[");
-        for (int i = 0; i < sizeDA(items); i++) {
-            fprintf(fp, "@%p,", &items->storage[i]);
-        }
-        fprintf(fp, "]");
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        fprintf(fp, "@%p,", &items->storage[i]);
+      }
+      fprintf(fp, "]");
     }
     else if ((items->displayMethod != 0) && (items->debugVal > 0)) { // display method set and method should display num. empty indeces
-        fprintf(fp, "[");
-        for (int i = 0; i < sizeDA(items); i++) {
-            items->displayMethod(items->storage[i], fp);
-            if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, "[%d]]", (capacityDA(items) - sizeDA(items)));
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        items->displayMethod(items->storage[i], fp);
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "[%d]]", (capacityDA(items) - sizeDA(items)));
     }
     else if ((items->displayMethod != 0) && (items->debugVal == 0)) { // display method set and method should not display num. empty indeces
-        fprintf(fp, "[");
-        for (int i = 0; i < sizeDA(items); i++) {
-            items->displayMethod(items->storage[i], fp);
-            if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, "]");
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        items->displayMethod(items->storage[i], fp);
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "]");
     }
 }
 
@@ -210,7 +207,7 @@ extern int debugDA(DA * items, int level) {
 // method frees dynamic array
 extern void freeDA(DA * items) {
     if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
-        for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(items->storage[i]); }
+      for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(items->storage[i]); }
     }
     free(items->storage);
     free(items);
