@@ -20,6 +20,8 @@ static int correctIndex(CDA *items, int oldIndex);
 static int getStartCDA(CDA * items);
 static int getEndCDA(CDA * items);
 static bool isFull(CDA * items);
+static void doubleArray(CDA * items);
+static void halveArray(CDA * items);
 
 struct cda {
     void * (*storage);
@@ -49,12 +51,12 @@ extern CDA * newCDA(void) {
     return array;
 }
 
-extern void setCDAdisplay(CDA *items, void (*display)(void *ptr, FILE *fp)) { items->displayMethod = display; }
+extern void setCDAdisplay(CDA *items, void (*displayMeth)(void *ptr, FILE *fp)) { items->displayMethod = displayMeth; }
 
-extern void setCDAfree(CDA *items, void (*free)(void *ptr)) { items->freeMethod = free; }
+extern void setCDAfree(CDA *items, void (*freeMeth)(void *ptr)) { items->freeMethod = freeMeth; }
 
 static bool isFull(CDA * items) {
-  if ((items->startIndex == 0) && (items->endIndex == capacityCDA(items) - 1) || (items->startIndex == items->endIndex + 1)) {
+  if ( (items->startIndex == 0 && items->endIndex == capacityCDA(items) - 1) || (items->startIndex == items->endIndex + 1)) {
     return true;
   }
   else { return false; }
@@ -87,6 +89,12 @@ extern void insertCDA(CDA *items, int index, void *value) {
         }
     }
 }
+
+static void doubleArray(CDA * items);
+
+extern void * removeCDA(CDA * items, int index);
+
+static void halveArray(CDA * items);
 
 static int getStartCDA(CDA * items) { return items->startIndex; }
 
@@ -126,7 +134,7 @@ extern void *setCDA(CDA *items, int index, void *value) {
 }
 
 // method returns the size of array
-extern int sizeCDA(CDA *items) { return items->size;}
+extern int sizeCDA(CDA *items) { return items->size; }
 
 // method returns the capacity of array
 static int capacityCDA(CDA * items) { return items->capacity; }
