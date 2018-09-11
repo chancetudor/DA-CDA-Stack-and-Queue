@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "cda.h"
 
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in DA struct
@@ -18,6 +19,7 @@ static int capacityCDA(CDA * items);
 static int correctIndex(CDA *items, int oldIndex);
 static int getStartCDA(CDA * items);
 static int getEndCDA(CDA * items);
+static bool isFull(CDA * items);
 
 struct cda {
     void * (*storage);
@@ -51,24 +53,37 @@ extern void setCDAdisplay(CDA *items, void (*display)(void *ptr, FILE *fp)) { it
 
 extern void setCDAfree(CDA *items, void (*free)(void *ptr)) { items->freeMethod = free; }
 
+static bool isFull(CDA * items) {
+  if ((items->startIndex == 0) && (items->endIndex == capacityCDA(items) - 1) || (items->startIndex == items->endIndex + 1)) {
+    return true;
+  }
+  else { return false; }
+}
+
 extern void insertCDA(CDA *items, int index, void *value) {
     assert(index >= -1 && index <= sizeCDA(items));
-    if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // insert at the back of the CDA
-        items->storage[getEndCDA(items)] = value;
+    if (isFull(items) == true) {
+      // FIXME: write function that doubles array capacity
+    }
+    else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // insert at the back of the CDA
+        items->storage[items->endIndex] = value;
         items->endIndex = correctIndex(items, getEndCDA(items) + 1);
         items->size += 1;
     }
     else if (index == -1 || index == 0) { // insert at the front of the CDA
         items->startIndex = correctIndex(items, getStartCDA(items) - 1);
-        items->storage[getStartCDA(items)] = value;
+        items->storage[items->startIndex] = value;
         items->size += 1;
     }
     else { // insert in the middle of the CDA
         int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
         int newIndex = correctIndex(items, index);
         if (newIndex <= decisionPt) {
-            void * (*temp) = getCDA(items, index);
-
+            void * (*temp) = getCDA(items, newIndex);
+            // FIXME: write loop to shift elements left
+        }
+        else {
+          // FIXME: write loop to shift elements right
         }
     }
 }
@@ -95,16 +110,17 @@ extern void *getCDA(CDA *items, int index) {
 
 extern void *setCDA(CDA *items, int index, void *value) {
     assert(index >= -1 && index <= sizeCDA(items));
-    void * (*val) = getCDA(items, index);
-    if (index == sizeCDA(items)) {
+    int newIndex = correctIndex(items, index); // FIXME: do i have to correctIndex here?
+    void * (*val) = getCDA(items, newIndex);
+    if (newIndex == sizeCDA(items)) {
         insertCDAback(items, value);
         return val;
     }
-    else if (index == -1) {
+    else if (newIndex == -1) {
         insertCDAfront(items, value);
         return val;
     }
-    else { items->storage[index] = value; }
+    else { items->storage[newIndex] = value; }
 
     return val;
 }
