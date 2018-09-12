@@ -52,7 +52,6 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
     assert(index >= 0 && index <= sizeDA(items));
-    //if ((getCapacityDA(items) - sizeDA(items)) < 1) { doubleArray(items); }
     if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
     if (index == sizeDA(items)) {
       items->storage[index] = value;
@@ -62,7 +61,7 @@ extern void insertDA(DA * items, int index, void * value) {
       void * (*temp) = getDA(items, sizeDA(items) - 1);
       for (int i = sizeDA(items) - 1; i >= index; i--) {
         items->storage[i + 1] = temp;
-        temp = items->storage[i + 1];
+        temp = items->storage[i - 1];
         items->storage[i + 1] = items->storage[i];
       }
       items->storage[index] = value;
@@ -70,48 +69,34 @@ extern void insertDA(DA * items, int index, void * value) {
     }
 }
 
-// method doubles array capacity and reallocates memory for new capacity
-static void doubleArray(DA * items) {
-    /*int newCap = (items->capacity) * 2;
-    void * (*newArray) = malloc(sizeof(void *) * newCap);
-    assert(newArray != 0);
-    items->storage = newArray;
-    items->capacity = newCap;*/
-
-    items->capacity = (items->capacity) * 2;
-    items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
-    assert(items->storage != 0);
-}
-
 // method removes item at the given index
 // method shifts each higher element one index down
 // if ratio of array size to array capacity < .25, array shrinks by half
 extern void * removeDA(DA * items, int index) {
-    void * (*val) = getDA(items, index);
-    //void * (*temp) = val;
-    for (int i = index; i < sizeDA(items); i++) { items->storage[i] = items->storage[i + 1]; }
-    //items->storage[sizeDA(items) - 1] = temp;
-    items->size -= 1;
-    assert(sizeDA(items) > 0);
-    if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
+  void * (*val) = getDA(items, index);
+  for (int i = index; i < sizeDA(items) - 1; i++) {
+    items->storage[i] = items->storage[i + 1];
+  }
+  items->size -= 1;
+  assert(sizeDA(items) > 0);
+  if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
 
-    return val;
+  return val;
+}
+
+// method doubles array capacity and reallocates memory for new capacity
+static void doubleArray(DA * items) {
+  items->capacity = (items->capacity) * 2;
+  items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
+  assert(items->storage != 0);
 }
 
 // method halves array capacity and reallocates memory for new capacity
 static void halveArray(DA * items) {
-    /*int newCap = (items->capacity) / 2;
-    assert(newCap >= 1);
-    void * (*newArray) = malloc(sizeof(void *) * newCap);
-    assert(newArray != 0);
-
-    items->storage = newArray;
-    items->capacity = newCap;*/
-
-    items->capacity = (items->capacity) / 2;
-    assert(items->capacity >= 1);
-    items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
-    assert(items->storage != 0);
+  items->capacity = (items->capacity) / 2;
+  assert(items->capacity >= 1);
+  items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
+  assert(items->storage != 0);
 }
 
 // method moves all items in donor array to recipient array
@@ -124,8 +109,8 @@ extern void unionDA(DA * recipient, DA * donor) {
 
 // method returns the value at the given index
 extern void * getDA(DA * items, int index) {
-    assert(index >= 0 && index < sizeDA(items));
-    return items->storage[index];
+  assert(index >= 0 && index < sizeDA(items));
+  return items->storage[index];
 }
 
 // method replaces element value at the given index
@@ -135,7 +120,7 @@ extern void * setDA(DA * items, int index, void * value) {
     insertDA(items, index, value);
     return val;
   }
-  else if (index > sizeDA(items) || index < 0) { return 0; } // no value replaced
+  else if (index > sizeDA(items) || index < 0) { return 0; } // no value set
   else { items->storage[index] = value; }
 
   return val;
@@ -192,17 +177,17 @@ extern void displayDA(DA * items, FILE *fp) {
 
 // method sets an internal flag in the object to the given value
 extern int debugDA(DA * items, int level) {
-    int prevVal = items->debugVal;
-    items->debugVal = level;
+  int prevVal = items->debugVal;
+  items->debugVal = level;
 
-    return prevVal;
+  return prevVal;
 }
 
 // method frees dynamic array
 extern void freeDA(DA * items) {
-    if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
-      for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(items->storage[i]); }
-    }
-    free(items->storage);
-    free(items);
+  if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
+    for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(items->storage[i]); }
+  }
+  free(items->storage);
+  free(items);
 }

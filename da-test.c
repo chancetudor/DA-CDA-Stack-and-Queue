@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
         freeINTEGER(removeDA(d, R2)); //remove middle
         --count;
     }
+    printf("size after random removes: %d\n", sizeDA(d));
     printf("array d:");
     displayDA(d, stdout);
     printf("\n");
