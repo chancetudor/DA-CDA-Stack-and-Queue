@@ -87,10 +87,10 @@ extern void insertCDA(CDA *items, int index, void *value) {
   else { // insert in the middle of the CDA
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
-    if (trueIndex <= decisionPt) {
+    if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
-    else {
+    else { // shift right, possibly FIXME
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
   }
@@ -100,23 +100,31 @@ static void doubleArray(CDA * items) {
   int newCap = items->capacity * 2;
   void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
+  for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
+  items->storage = temp;
+  items->startIndex = 0;
 }
 
-// removes and returns the item named by the given index
-// item at the next higher slot shifts to that slot (and so on)
-// if ratio of size to capacity < .25 array shrinks by half
-// array should never shrink below a capacity of one
-extern void * removeCDA(CDA * items, int index);
-
-static void halveArray(CDA * items);
+static void halveArray(CDA * items) {
+  int newCap = items->capacity / 2;
+  void * (*temp) = malloc(sizeof(void*) * newCap);
+  assert(temp != 0);
+  for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
+  items->storage = temp;
+  items->startIndex = 0;
+}
 
 static int getStartCDA(CDA * items) { return items->startIndex; }
 
 static int getEndCDA(CDA * items) { return items->endIndex; }
 
-extern void *removeCDA(CDA *items, int index) {
+// removes and returns the item named by the given index
+// item at the next higher slot shifts to that slot (and so on)
+// if ratio of size to capacity < .25 array shrinks by half
+// array should never shrink below a capacity of one
+extern void *removeCDA(CDA * items, int index) {
   int trueIndex = correctIndex(items, index);
-  void * (*value) = getCDA(trueIndex);
+  void * (*value) = getCDA(items, trueIndex);
   if (index == 0) {
     items->startIndex = correctIndex(items, items->startIndex + 1);
     items->size -= 1;
@@ -129,7 +137,11 @@ extern void *removeCDA(CDA *items, int index) {
 
   else {
     memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
+    items->size -= 1;
   }
+
+  assert(sizeCDA(items) > 0);
+  if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) { halveArray(items); }
 
   return value;
 }
