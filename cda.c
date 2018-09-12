@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <string.h>
 #include "cda.h"
 
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in DA struct
@@ -24,31 +25,31 @@ static void doubleArray(CDA * items);
 static void halveArray(CDA * items);
 
 struct cda {
-    void * (*storage);
-    int capacity;
-    int size;
-    int startIndex;
-    int endIndex;
-    int debugVal;
-    FM freeMethod;
-    DM displayMethod;
+  void * (*storage);
+  int capacity;
+  int size;
+  int startIndex;
+  int endIndex;
+  int debugVal;
+  FM freeMethod;
+  DM displayMethod;
 };
 
 // constructor; returns new, initialized CDA object
 extern CDA * newCDA(void) {
-    CDA * array = malloc(sizeof(CDA));
-    assert(array != 0);
-    array->capacity = 1;
-    array->storage = malloc(sizeof(void *) * array->capacity);
-    assert(array->storage != 0);
-    array->size = 0;
-    array->startIndex = 0;
-    array->endIndex = 0;
-    array->debugVal = 0;
-    array->freeMethod = 0;
-    array->displayMethod = 0;
+  CDA * array = malloc(sizeof(CDA));
+  assert(array != 0);
+  array->capacity = 1;
+  array->storage = malloc(sizeof(void *) * array->capacity);
+  assert(array->storage != 0);
+  array->size = 0;
+  array->startIndex = 0;
+  array->endIndex = 0;
+  array->debugVal = 0;
+  array->freeMethod = 0;
+  array->displayMethod = 0;
 
-    return array;
+  return array;
 }
 
 extern void setCDAdisplay(CDA *items, void (*displayMeth)(void *ptr, FILE *fp)) { items->displayMethod = displayMeth; }
@@ -71,39 +72,34 @@ static int correctIndex(CDA *items, int oldIndex) {
 // previous item at that slot shifts to the next higher slot (and so on)
 // if no room for insertion, array grows by doubling
 extern void insertCDA(CDA *items, int index, void *value) {
-    assert(index >= 0 && index <= sizeCDA(items));
-    if (isFull(items) == true) {
-      // FIXME: write function that doubles array capacity
+  assert(index >= 0 && index <= sizeCDA(items));
+  if (isFull(items) == true) { doubleArray(items); }
+  else if (index == 0) { // FIXME: insert at the front of the CDA
+    items->startIndex = correctIndex(items, getStartCDA(items) - 1);
+    items->storage[getStartCDA(items)] = value;
+    items->size += 1;
+  }
+  else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // FIXME: insert at the back of the CDA
+    items->storage[getEndCDA(items)] = value; // FIXME: why is this first, and not correctIndex()?
+    items->endIndex = correctIndex(items, getEndCDA(items) + 1);
+    items->size += 1;
+  }
+  else { // insert in the middle of the CDA
+    int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
+    int trueIndex = correctIndex(items, index);
+    if (trueIndex <= decisionPt) {
+      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
-    else if (index == 0) { // FIXME: insert at the front of the CDA
-      items->startIndex = correctIndex(items, getStartCDA(items) - 1);
-      items->storage[getStartCDA(items)] = value;
-      items->size += 1;
+    else {
+      memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
-    else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // FIXME: insert at the back of the CDA
-      items->storage[getEndCDA(items)] = value; // FIXME: why is this first, and not correctIndex()?
-      items->endIndex = correctIndex(items, getEndCDA(items) + 1);
-      items->size += 1;
-    }
-    else { // insert in the middle of the CDA
-      int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
-      int trueIndex = correctIndex(items, index);
-      //void * (*temp) = getCDA(items, trueIndex);
-      if (trueIndex <= decisionPt) {
-        void * (*temp) = getCDA(items, getStartCDA(items));
-        for (int i = getStartCDA(items); i < decisionPt; i++) {
-          items->storage[i] = items->storage[i + 1];
-        }
-        items->storage{getStartCDA(items) - 1} = temp;
-      }
-      else {
-        // FIXME: write loop to shift elements right
-      }
-    }
+  }
 }
 
 static void doubleArray(CDA * items) {
-
+  int newCap = items->capacity * 2;
+  void * (*temp) = malloc(sizeof(void*) * newCap);
+  assert(temp != 0);
 }
 
 // removes and returns the item named by the given index
@@ -119,6 +115,8 @@ static int getStartCDA(CDA * items) { return items->startIndex; }
 static int getEndCDA(CDA * items) { return items->endIndex; }
 
 extern void *removeCDA(CDA *items, int index) {
+  int trueIndex = correctIndex(items, index);
+  void * (*value) = getCDA(trueIndex);
   if (index == 0) {
     items->startIndex = correctIndex(items, items->startIndex + 1);
     items->size -= 1;
@@ -130,8 +128,10 @@ extern void *removeCDA(CDA *items, int index) {
   }
 
   else {
-
+    memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
   }
+
+  return value;
 }
 
 // takes two arrays and moves all the items in the donor array to the recipient arrays
@@ -143,29 +143,29 @@ extern void unionCDA(CDA *recipient, CDA *donor);
 // routine has to translate between the users view
 // and the internal view (where the first item can be anywhere in the underlying array)
 extern void *getCDA(CDA *items, int index) {
-    assert(index >= 0 && index < sizeCDA(items));
-    int trueIndex = correctIndex(items, index + getStartCDA(items));
-    return items->storage[trueIndex];
+  assert(index >= 0 && index < sizeCDA(items));
+  int trueIndex = correctIndex(items, index + getStartCDA(items));
+  return items->storage[trueIndex];
 }
 
 // updates the value at the given index, from user's perspective
 // if given index == size of the array, value is inserted at back of array
 // if given index == -1 value is inserted at front of array
 extern void *setCDA(CDA *items, int index, void *value) {
-    assert(index >= -1 && index <= sizeCDA(items));
-    int trueIndex = correctIndex(items, index + getStartCDA(items));
-    void * (*val) = getCDA(items, trueIndex);
-    if (index == sizeCDA(items)) {
-        insertCDAback(items, value);
-        return val;
-    }
-    else if (index == -1) {
-        insertCDAfront(items, value);
-        return val;
-    }
-    else { items->storage[trueIndex] = value; }
-
+  assert(index >= -1 && index <= sizeCDA(items));
+  int trueIndex = correctIndex(items, index + getStartCDA(items));
+  void * (*val) = getCDA(items, trueIndex);
+  if (index == sizeCDA(items)) {
+    insertCDAback(items, value);
     return val;
+  }
+  else if (index == -1) {
+    insertCDAfront(items, value);
+    return val;
+  }
+  else { items->storage[trueIndex] = value; }
+
+  return val;
 }
 
 // method returns the size of array
