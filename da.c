@@ -88,9 +88,9 @@ static void doubleArray(DA * items) {
 // if ratio of array size to array capacity < .25, array shrinks by half
 extern void * removeDA(DA * items, int index) {
     void * (*val) = getDA(items, index);
-    void * (*temp) = val;
+    //void * (*temp) = val;
     for (int i = index; i < sizeDA(items); i++) { items->storage[i] = items->storage[i + 1]; }
-    items->storage[sizeDA(items) - 1] = temp;
+    //items->storage[sizeDA(items) - 1] = temp;
     items->size -= 1;
     assert(sizeDA(items) > 0);
     if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
@@ -116,7 +116,10 @@ static void halveArray(DA * items) {
 
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
-    for (int i = recipient->size; i < donor->size; i++) { insertDA(recipient, i, donor->storage[i]); }
+  for (int i = recipient->size; i < donor->size; i++) {
+    insertDA(recipient, i, donor->storage[i]);
+    removeDA(donor, i);
+  }
 }
 
 // method returns the value at the given index
