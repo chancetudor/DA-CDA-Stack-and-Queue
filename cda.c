@@ -89,7 +89,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
     int trueIndex = correctIndex(items, index);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       printf("shifting left\n");
-      
+
     }
     else { // shift right, possibly FIXME
       printf("shifting right\n");
