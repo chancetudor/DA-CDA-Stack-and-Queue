@@ -68,21 +68,21 @@ extern void insertCDA(CDA *items, int index, void *value) {
       // FIXME: write function that doubles array capacity
     }
     else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // insert at the back of the CDA
-        items->storage[items->endIndex] = value;
+        items->storage[getEndCDA(items)] = value;
         items->endIndex = correctIndex(items, getEndCDA(items) + 1);
         items->size += 1;
     }
     else if (index == -1 || index == 0) { // insert at the front of the CDA
         items->startIndex = correctIndex(items, getStartCDA(items) - 1);
-        items->storage[items->startIndex] = value;
+        items->storage[getStartCDA(items)] = value;
         items->size += 1;
     }
     else { // insert in the middle of the CDA
         int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
         int newIndex = correctIndex(items, index);
+        void * (*temp) = getCDA(items, newIndex);
         if (newIndex <= decisionPt) {
-            void * (*temp) = getCDA(items, newIndex);
-            // FIXME: write loop to shift elements left
+          // FIXME: write loop to shift elements left
         }
         else {
           // FIXME: write loop to shift elements right
