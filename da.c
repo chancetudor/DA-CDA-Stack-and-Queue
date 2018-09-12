@@ -101,8 +101,8 @@ static void halveArray(DA * items) {
 
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
-  for (int i = recipient->size; i < donor->size; i++) {
-    insertDA(recipient, i, donor->storage[i]);
+  for (int i = 0; i < donor->size; i++) {
+    insertDA(recipient, sizeDA(Items), donor->storage[i]);
     removeDA(donor, i);
   }
 }
