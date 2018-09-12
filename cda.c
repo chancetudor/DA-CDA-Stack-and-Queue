@@ -62,36 +62,50 @@ static bool isFull(CDA * items) {
   else { return false; }
 }
 
+static int correctIndex(CDA *items, int oldIndex) {
+    int index = (oldIndex + capacityCDA(items)) % capacityCDA(items);
+    return index;
+}
+
+// places *value in slot named by given index
+// previous item at that slot shifts to the next higher slot (and so on)
+// if no room for insertion, array grows by doubling
 extern void insertCDA(CDA *items, int index, void *value) {
     assert(index >= -1 && index <= sizeCDA(items));
     if (isFull(items) == true) {
       // FIXME: write function that doubles array capacity
     }
-    else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // insert at the back of the CDA
-        items->storage[getEndCDA(items)] = value;
-        items->endIndex = correctIndex(items, getEndCDA(items) + 1);
-        items->size += 1;
+    else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // FIXME: insert at the back of the CDA
+      items->endIndex = correctIndex(items, getEndCDA(items) + 1);
+      items->storage[getEndCDA(items)] = value;
+      items->size += 1;
     }
-    else if (index == -1 || index == 0) { // insert at the front of the CDA
-        items->startIndex = correctIndex(items, getStartCDA(items) - 1);
-        items->storage[getStartCDA(items)] = value;
-        items->size += 1;
+    else if (index == -1 || index == 0) { // FIXME: insert at the front of the CDA
+      items->startIndex = correctIndex(items, getStartCDA(items) - 1);
+      items->storage[getStartCDA(items)] = value;
+      items->size += 1;
     }
     else { // insert in the middle of the CDA
-        int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
-        int newIndex = correctIndex(items, index);
-        void * (*temp) = getCDA(items, newIndex);
-        if (newIndex <= decisionPt) {
-          // FIXME: write loop to shift elements left
-        }
-        else {
-          // FIXME: write loop to shift elements right
-        }
+      int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
+      int newIndex = correctIndex(items, index);
+      void * (*temp) = getCDA(items, newIndex);
+      if (newIndex <= decisionPt) {
+        // FIXME: write loop to shift elements left
+      }
+      else {
+        // FIXME: write loop to shift elements right
+      }
     }
 }
 
-static void doubleArray(CDA * items);
+static void doubleArray(CDA * items) {
 
+}
+
+// removes and returns the item named by the given index
+// item at the next higher slot shifts to that slot (and so on)
+// if ratio of size to capacity < .25 array shrinks by half
+// array should never shrink below a capacity of one
 extern void * removeCDA(CDA * items, int index);
 
 static void halveArray(CDA * items);
@@ -102,20 +116,22 @@ static int getEndCDA(CDA * items) { return items->endIndex; }
 
 extern void *removeCDA(CDA *items, int index);
 
+// takes two arrays and moves all the items in the donor array to the recipient array
 extern void unionCDA(CDA *recipient, CDA *donor);
 
-static int correctIndex(CDA *items, int oldIndex) {
-    int index = (oldIndex + capacityCDA(items)) % capacityCDA(items);
-    return index;
-}
-
-// method returns the value at the given index
+// method returns the value at the given index, from user's perspective
+// In the user's view, the first item is at index zero, the second item at index 1, and so on
+// routine has to translate between the users view
+// and the internal view (where the first item can be anywhere in the underlying array)
 extern void *getCDA(CDA *items, int index) {
     assert(index >= 0 && index < sizeCDA(items));
     int newIndex = correctIndex(items, index + getStartCDA(items));
     return items->storage[newIndex];
 }
 
+// updates the value at the given index, from user's perspective
+// if given index == size of the array, value is inserted at back of array
+// if given index == value is inserted at front of array
 extern void *setCDA(CDA *items, int index, void *value) {
     assert(index >= -1 && index <= sizeCDA(items));
     int newIndex = correctIndex(items, index); // FIXME: do i have to correctIndex here?
