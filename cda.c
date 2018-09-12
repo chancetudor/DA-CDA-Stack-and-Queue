@@ -88,9 +88,11 @@ extern void insertCDA(CDA *items, int index, void *value) {
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
+      printf("shifting left\n");
       memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
     else { // shift right, possibly FIXME
+      printf("shifting right\n");
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
   }
@@ -140,6 +142,7 @@ extern void *removeCDA(CDA * items, int index) {
   }
 
   else {
+    printf("shifting in remove function\n");
     memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
     items->size -= 1;
   }
@@ -173,6 +176,8 @@ extern void *getCDA(CDA *items, int index) {
 // if given index == -1 value is inserted at front of array
 extern void *setCDA(CDA *items, int index, void *value) {
   assert(index >= -1 && index <= sizeCDA(items));
+  int trueIndex = correctIndex(items, index + getStartCDA(items));
+  void * (*val) = getCDA(items, trueIndex);
   if (index == sizeCDA(items)) {
     insertCDAback(items, value);
     return val;
@@ -182,8 +187,6 @@ extern void *setCDA(CDA *items, int index, void *value) {
     return val;
   }
   else {
-    int trueIndex = correctIndex(items, index + getStartCDA(items));
-    void * (*val) = getCDA(items, trueIndex);
     items->storage[trueIndex] = value;
   }
 
