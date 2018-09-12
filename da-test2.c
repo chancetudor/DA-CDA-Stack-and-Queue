@@ -31,7 +31,10 @@
 	      insertDA(new, 2, newINTEGER(25));
         showItems(new);
 	      unionDA(items, new);
+        printf("Items after union:\n");
 	      showItems(items);
+        printf("New after union:\n");
+        showItems(new);
 	printf("Freeing the list.\n");
         freeDA(items);
         return 0;
