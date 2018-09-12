@@ -102,11 +102,11 @@ static void halveArray(DA * items) {
 
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
-  for (int i = 0; i < donor->size; i++) {
+  for (int i = 0; i < sizeDA(donor); i++) {
     printf("inserting %d\n", i);
     insertDA(recipient, sizeDA(recipient), donor->storage[i]);
-    removeDA(donor, i);
   }
+  for (int i = 0; i < sizeDA(donor); i++) { removeDA(donor, i); }
 }
 
 // method returns the value at the given index
