@@ -124,9 +124,7 @@ static void halveArray(DA * items) {
 
 // FIX ME: unionDA overwrites old array
 extern void unionDA(DA * recipient, DA * donor) {
-    for (int i = 0; i < donor->size; i++) {
-        insertDA(recipient, i, donor->storage[i]);
-    }
+    for (int i = 0; i < donor->size; i++) { insertDA(recipient, i, donor->storage[i]); }
 }
 
 // method returns the value at the given index
