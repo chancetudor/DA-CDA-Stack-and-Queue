@@ -53,6 +53,7 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 extern void insertDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
   if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
+
   if (index == sizeDA(items)) {
     items->storage[index] = value;
     items->size += 1;
@@ -102,6 +103,7 @@ static void halveArray(DA * items) {
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
   for (int i = 0; i < donor->size; i++) {
+    printf("inserting %d\n", i);
     insertDA(recipient, sizeDA(recipient), donor->storage[i]);
     removeDA(donor, i);
   }
