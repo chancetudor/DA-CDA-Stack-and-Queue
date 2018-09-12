@@ -31,11 +31,6 @@
 	      insertDA(new, 3, newINTEGER(25));
         showItems(new);
 	      unionDA(items, new);
-        printf("The value ");
-        INTEGER *i = removeDA(items,0);                  //remove from front
-        displayINTEGER(i,stdout);
-        printf(" was removed.\n");
-        freeINTEGER(i);
         printf("Items after union:\n");
 	      showItems(items);
         printf("New after union:\n");

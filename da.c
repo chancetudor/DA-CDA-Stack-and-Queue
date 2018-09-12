@@ -10,11 +10,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "da.h"
 
 static void doubleArray(DA * items);
 static void halveArray(DA * items);
 static int getCapacityDA(DA * items);
+static void removeItem(DA * items);
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in DA struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in DA struct
 
@@ -75,9 +77,10 @@ extern void insertDA(DA * items, int index, void * value) {
 // if ratio of array size to array capacity < .25, array shrinks by half
 extern void * removeDA(DA * items, int index) {
   void * (*val) = getDA(items, index);
-  for (int i = index; i < sizeDA(items) - 1; i++) {
-    items->storage[i] = items->storage[i + 1];
-  }
+  //for (int i = 0; i < sizeDA(items); i++) {
+    //items->storage[i] = items->storage[i + 1];
+  //}
+  memmove(&items->storage[index], &items->storage[index + 1], ((sizeDA(items) - 1) - index) * sizeof(void *));
   items->size -= 1;
   assert(sizeDA(items) > 0);
   if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
@@ -100,13 +103,16 @@ static void halveArray(DA * items) {
   assert(items->storage != 0);
 }
 
+static void removeItem(DA * items) {
+  for (int i = 0; i < sizeDA(items); i++) { items->storage[i] = items->storage[i + 1]; }
+  items->size -= 1;
+}
+
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
-  for (int i = 0; i < sizeDA(donor); i++) {
-    printf("inserting %d\n", i);
-    insertDA(recipient, sizeDA(recipient), donor->storage[i]);
-  }
-  for (int i = 0; i < sizeDA(donor); i++) { removeDA(donor, i); }
+  for (int i = 0; i < sizeDA(donor); i++) { insertDA(recipient, sizeDA(recipient), donor->storage[i]); }
+  int donorSize = sizeDA(donor);
+  for (int i = 0; i < donorSize; i++) { removeItem(donor); }
 }
 
 // method returns the value at the given index
