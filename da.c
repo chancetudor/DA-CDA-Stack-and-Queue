@@ -45,10 +45,10 @@ extern DA * newDA(void) {
 }
 
 // method is passed a function able to display element in generic array slot
-extern void setDAdisplay(DA * items, void (*display)(void * ptr, FILE *fp)) { items->displayMethod = display; }
+extern void setDAdisplay(DA * items, void (*displayMeth)(void * ptr, FILE *fp)) { items->displayMethod = display; }
 
 // method is passed a function able to free element in generic array slot
-extern void setDAfree(DA * items, void (*free)(void * ptr)) { items->freeMethod = free; }
+extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMethod = freeMeth; }
 
 // method places given item at the slot named by given index
 // array doubles if there is no room for insertion
