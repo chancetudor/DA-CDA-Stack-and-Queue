@@ -73,7 +73,7 @@ extern void insertDA(DA * items, int index, void * value) {
 // method doubles array capacity and reallocates memory for new capacity
 static void doubleArray(DA * items) {
     /*int newCap = (items->capacity) * 2;
-    void * (*newArray) = realloc(items->storage, sizeof(void *) * items->capacity);
+    void * (*newArray) = malloc(sizeof(void *) * newCap);
     assert(newArray != 0);
     items->storage = newArray;
     items->capacity = newCap;*/
@@ -81,8 +81,6 @@ static void doubleArray(DA * items) {
     items->capacity = (items->capacity) * 2;
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
-
-    //return items;
 }
 
 // method removes item at the given index
@@ -95,7 +93,7 @@ extern void * removeDA(DA * items, int index) {
     items->storage[sizeDA(items) - 1] = temp;
     items->size -= 1;
     assert(sizeDA(items) > 0);
-    if ((sizeDA(items)/((double)getCapacityDA(items))) < .25) { halveArray(items); }
+    if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
 
     return val;
 }
@@ -104,7 +102,7 @@ extern void * removeDA(DA * items, int index) {
 static void halveArray(DA * items) {
     /*int newCap = (items->capacity) / 2;
     assert(newCap >= 1);
-    void * (*newArray) = realloc(items->storage, sizeof(void *) * items->capacity);
+    void * (*newArray) = malloc(sizeof(void *) * newCap);
     assert(newArray != 0);
 
     items->storage = newArray;
@@ -114,13 +112,9 @@ static void halveArray(DA * items) {
     assert(items->capacity >= 1);
     items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
     assert(items->storage != 0);
-
-    //return items;
 }
 
 // method moves all items in donor array to recipient array
-
-// FIX ME: unionDA overwrites old array
 extern void unionDA(DA * recipient, DA * donor) {
     for (int i = 0; i < donor->size; i++) { insertDA(recipient, i, donor->storage[i]); }
 }
