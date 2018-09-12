@@ -22,7 +22,6 @@ struct da {
   void * (*storage);
   int capacity;
   int size;
-  int index;
   int debugVal;
   FM freeMethod;
   DM displayMethod;
@@ -36,7 +35,6 @@ extern DA * newDA(void) {
   array->storage = malloc(sizeof(void *) * array->capacity);
   assert(array->storage != 0);
   array->size = 0;
-  array->index = -1;
   array->debugVal = 0;
   array->freeMethod = 0;
   array->displayMethod = 0;
@@ -45,7 +43,7 @@ extern DA * newDA(void) {
 }
 
 // method is passed a function able to display element in generic array slot
-extern void setDAdisplay(DA * items, void (*displayMeth)(void * ptr, FILE *fp)) { items->displayMethod = display; }
+extern void setDAdisplay(DA * items, void (*displayMeth)(void * ptr, FILE *fp)) { items->displayMethod = displayMeth; }
 
 // method is passed a function able to free element in generic array slot
 extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMethod = freeMeth; }
