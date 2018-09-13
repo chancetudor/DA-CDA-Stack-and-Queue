@@ -110,7 +110,12 @@ static void halveArray(DA * items) {
 static void removeItem(DA * items) {
   for (int i = 0; i < sizeDA(items); i++) { items->storage[i] = items->storage[i + 1]; }
   items->size -= 1;
-  if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
+  if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
+    halveArray(items);
+    if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
+      halveArray(items);
+    }
+  }
 }
 
 // method moves all items in donor array to recipient array
