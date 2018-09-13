@@ -8,7 +8,7 @@
     int
     main(void)
         {
-        srandom(1);
+        srand(1);
         DA *items = newDA();
         setDAfree(items,freeINTEGER);
         setDAdisplay(items, displayINTEGER);
