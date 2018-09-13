@@ -15,7 +15,7 @@ da.o : da.c da.h
 	gcc $(OOPTS) da.c
 cda.o : cda.c cda.h
 	gcc $(OOPTS) cda.c
-da-test2.o : da.c da.h
+da-test2.o : da-test2.c da.h
 	gcc $(OOPTS) da-test2.c
 test-cda3.o : test-cda3.c cda.h
 	gcc $(OOPTS) test-cda3.c

@@ -11,11 +11,13 @@
         srandom(1);
         DA *items = newDA();
         setDAfree(items,freeINTEGER);
+        setDAdisplay(items, displayINTEGER);
         showItems(items);
         insertDA(items,0,newINTEGER(3));                 //insert at front
         insertDA(items,sizeDA(items),newINTEGER(2));     //insert at back
         insertDA(items,1,newINTEGER(1));                 //insert at middle
         showItems(items);
+
         printf("The value ");
         INTEGER *i = removeDA(items,0);                  //remove from front
         displayINTEGER(i,stdout);
@@ -30,12 +32,14 @@
 	      insertDA(new, sizeDA(new), newINTEGER(150));
 	      insertDA(new, 2, newINTEGER(25));
         showItems(new);
+
 	      unionDA(items, new);
+
         printf("Items after union:\n");
 	      showItems(items);
         printf("New after union:\n");
         showItems(new);
-	printf("Freeing the list.\n");
+	      printf("Freeing the list.\n");
         freeDA(items);
         return 0;
         }
