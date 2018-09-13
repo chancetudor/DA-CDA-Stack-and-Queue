@@ -24,4 +24,4 @@ valgrind : da cda
 	valgrind --leak-check=full ./da
 	valgrind --leak-check=full ./cda
 clean :
-	rm -f $(OBJS) $(CDAOBJS) da cda
+	rm -f $(DAOBJS) $(CDAOBJS) da cda
