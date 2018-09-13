@@ -66,6 +66,49 @@ main(void)
         debugDA(p,0);
         }
     printf("size: %d\n",sizeDA(p));
+    setDAdisplay(p,0);
+    debugDA(p,2);
+    display(p,"items: ");
+    for (i = 0; i < 2; ++i)
+        {
+        insertDA(p,0,newINTEGER(3));
+        insertDA(p,1,newINTEGER(2));
+        insertDA(p,0,newINTEGER(4));
+        insertDA(p,sizeDA(p),newINTEGER(1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,sizeDA(p)-1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,0));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,0));
+        display(p,"items: ");
+        debugDA(p,0);
+        }
+    printf("size: %d\n",sizeDA(p));
+    printf("size: %d\n",sizeDA(p));
+    setDAdisplay(p,0);
+    debugDA(p,0);
+    display(p,"items: ");
+    for (i = 0; i < 2; ++i)
+        {
+        insertDA(p,0,newINTEGER(3));
+        insertDA(p,1,newINTEGER(2));
+        insertDA(p,0,newINTEGER(4));
+        insertDA(p,sizeDA(p),newINTEGER(1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,sizeDA(p)-1));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,0));
+        display(p,"items: ");
+        freeINTEGER(removeDA(p,0));
+        display(p,"items: ");
+        debugDA(p,0);
+        }
+    printf("size: %d\n",sizeDA(p));
     freeDA(p);
     return 0;
     }

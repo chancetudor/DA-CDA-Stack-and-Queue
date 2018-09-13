@@ -54,7 +54,7 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); } // possible memory leak
+  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); } // FIXME: possible memory leak
   if (index == sizeDA(items)) {
     items->storage[index] = value;
     items->size += 1;
@@ -95,7 +95,7 @@ extern void * removeDA(DA * items, int index) {
 // method doubles array capacity and reallocates memory for new capacity
 static void doubleArray(DA * items) {
   items->capacity = (items->capacity) * 2;
-  items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // possibly memory leak
+  items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // FIXME: possibly memory leak
   assert(items->storage != 0);
 }
 
@@ -161,14 +161,16 @@ extern void displayDA(DA * items, FILE *fp) {
   else if ((items->displayMethod == 0) && (items->debugVal > 0)) { // no display method set and method should display num. empty indeces
     fprintf(fp, "[");
     for (int i = 0; i < sizeDA(items); i++) {
-      fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      fprintf(fp, "@%p", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
     }
-    fprintf(fp, "[%d]]", (getCapacityDA(items) - sizeDA(items)));
+    fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
   }
   else if ((items->displayMethod == 0) && (items->debugVal == 0)) { // no display method set and method should not display num. empty indeces
     fprintf(fp, "[");
     for (int i = 0; i < sizeDA(items); i++) {
-      fprintf(fp, "@%p,", &items->storage[i]);
+      fprintf(fp, "@%p", &items->storage[i]);
+      if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
     }
     fprintf(fp, "]");
   }
