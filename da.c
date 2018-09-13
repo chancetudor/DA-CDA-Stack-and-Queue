@@ -81,9 +81,10 @@ extern void * removeDA(DA * items, int index) {
     //items->storage[i] = items->storage[i + 1];
   //}
   memmove(&items->storage[index], &items->storage[index + 1], ((sizeDA(items) - 1) - index) * sizeof(void *));
-  items->size -= 1;
   assert(sizeDA(items) > 0);
+  items->size -= 1;
   if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
+
 
   return val;
 }
