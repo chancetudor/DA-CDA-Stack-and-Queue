@@ -16,7 +16,7 @@
 static void doubleArray(DA * items);
 static void halveArray(DA * items);
 static int getCapacityDA(DA * items);
-static void removeItem(DA * items);
+//static void removeItem(DA * items);
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in DA struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in DA struct
 
@@ -60,11 +60,11 @@ extern void insertDA(DA * items, int index, void * value) {
     items->size += 1;
   }
   else {
-    void * (*temp) = getDA(items, sizeDA(items) - 1);
-    for (int i = sizeDA(items) - 1; i >= index; i--) {
-      items->storage[i + 1] = temp;
-      temp = items->storage[i - 1]; // possible memory leak
-      items->storage[i + 1] = items->storage[i];
+    //void *temp = getDA(items, sizeDA(items) - 1); // just void *
+    for (int i = sizeDA(items); i >= index + 1; i--) {
+      items->storage[i] = items->storage[i - 1];
+      //temp = items->storage[i - 1]; // possible memory leak
+      //items->storage[i + 1] = items->storage[i];
     }
     items->storage[index] = value;
     items->size += 1;
@@ -96,6 +96,15 @@ static void doubleArray(DA * items) {
   items->capacity = (items->capacity) * 2;
   items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // FIXME: possibly memory leak
   assert(items->storage != 0);
+  /*int newCap = items->capacity * 2;
+  void * (*newArray) = malloc(sizeof(void *) * newCap);
+  assert(newArray != 0);
+  for (int i = 0; i < sizeDA(items); i++) {
+    newArray[i] = items->storage[i];
+  }
+  items->storage = newArray;
+  items->capacity = newCap;
+  free(newArray);*/
 }
 
 // method halves array capacity and reallocates memory for new capacity
@@ -106,7 +115,7 @@ static void halveArray(DA * items) {
   assert(items->storage != 0);
 }
 
-static void removeItem(DA * items) {
+/*static void removeItem(DA * items) {
   for (int i = 0; i < sizeDA(items); i++) { items->storage[i] = items->storage[i + 1]; }
   items->size -= 1;
   if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
@@ -115,13 +124,16 @@ static void removeItem(DA * items) {
       halveArray(items);
     }
   }
-}
+}*/
 
 // method moves all items in donor array to recipient array
 extern void unionDA(DA * recipient, DA * donor) {
   for (int i = 0; i < sizeDA(donor); i++) { insertDA(recipient, sizeDA(recipient), donor->storage[i]); }
-  int donorSize = sizeDA(donor);
-  for (int i = 0; i < donorSize; i++) { removeItem(donor); }
+  //int donorSize = sizeDA(donor);
+  donor->size = 0;
+  donor->capacity = 1;
+  free(donor->storage);
+  donor->storage = malloc(sizeof(void *) * 1);
 }
 
 // method returns the value at the given index
