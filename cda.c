@@ -74,11 +74,13 @@ static int correctIndex(CDA *items, int oldIndex) {
 extern void insertCDA(CDA *items, int index, void *value) {
   assert(index >= 0 && index <= sizeCDA(items));
   if (index == 0) {
+    printf("FIXME: inserting at index 0\n");
     items->startIndex = correctIndex(items, getStartCDA(items) - 1);
     items->storage[getStartCDA(items)] = value;
     items->size += 1;
   }
   else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // FIXME: insert at the back of the CDA
+    printf("FIXME: inserting at back of array, index = %d\n", correctIndex(items, getEndCDA(items) + 1));
     items->storage[getEndCDA(items)] = value;
     items->endIndex = correctIndex(items, getEndCDA(items) + 1);
     items->size += 1;
@@ -86,6 +88,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
   else { // insert in the middle of the CDA
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
+    printf("FIXME: inserting at back of array, index = %d\n", trueIndex);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
