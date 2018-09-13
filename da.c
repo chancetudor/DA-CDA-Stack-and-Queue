@@ -128,16 +128,18 @@ extern void * getDA(DA * items, int index) {
 }
 
 // method replaces element value at the given index
+// method returns null ptr if no value is replaced
 extern void * setDA(DA * items, int index, void * value) {
-  void * (*val) = getDA(items, index);
+  assert(index >= 0 && index <= sizeDA(items));
+  void * (*oldVal) = getDA(items, index);
   if (index == sizeDA(items)) {
     insertDA(items, index, value);
-    return val;
+    return 0;
   }
-  else if (index > sizeDA(items) || index < 0) { return 0; } // no value set
-  else { items->storage[index] = value; }
-
-  return val;
+  else {
+    items->storage[index] = value;
+    return oldVal;
+  }
 }
 
 // method returns the number of items stored in the array
