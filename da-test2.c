@@ -26,9 +26,9 @@
         printf("The first item is %d.\n",x);
 	      DA *new = newDA();
 	      insertDA(new, 0, newINTEGER(100));
-        insertDA(new, 1, newINTEGER(50));
-	      insertDA(new, 2, newINTEGER(150));
-	      insertDA(new, 3, newINTEGER(25));
+        insertDA(new, 0, newINTEGER(50));
+	      insertDA(new, sizeDA(new), newINTEGER(150));
+	      insertDA(new, 2, newINTEGER(25));
         showItems(new);
 	      unionDA(items, new);
         printf("Items after union:\n");
