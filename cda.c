@@ -73,14 +73,13 @@ static int correctIndex(CDA *items, int oldIndex) {
 // if no room for insertion, array grows by doubling
 extern void insertCDA(CDA *items, int index, void *value) {
   assert(index >= 0 && index <= sizeCDA(items));
-  if (isFull(items) == true) { doubleArray(items); }
-  if (index == 0) { // FIXME: insert at the front of the CDA
+  if (index == 0) {
     items->startIndex = correctIndex(items, getStartCDA(items) - 1);
     items->storage[getStartCDA(items)] = value;
     items->size += 1;
   }
   else if (sizeCDA(items) == 0 || index == sizeCDA(items)) { // FIXME: insert at the back of the CDA
-    items->storage[getEndCDA(items)] = value; // FIXME: why is this first, and not correctIndex()?
+    items->storage[getEndCDA(items)] = value;
     items->endIndex = correctIndex(items, getEndCDA(items) + 1);
     items->size += 1;
   }
@@ -94,6 +93,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
   }
+  if (isFull(items) == true) { doubleArray(items); }
 }
 
 static void doubleArray(CDA * items) {
