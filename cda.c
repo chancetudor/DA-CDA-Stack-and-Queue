@@ -140,7 +140,6 @@ extern void *removeCDA(CDA * items, int index) {
   }
 
   else {
-    printf("shifting in remove function\n");
     memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
     items->size -= 1;
   }

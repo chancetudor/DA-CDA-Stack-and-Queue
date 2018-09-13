@@ -1,22 +1,22 @@
 OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
-DAOBJS = da.o test-da.o integer.o
-CDAOBJS = cda.o test-cda2.o integer.o
+DAOBJS = da.o da-test2.o integer.o
+CDAOBJS = cda.o test-cda.o integer.o
 
 all : da cda
 
-test-da : $(DAOBJS)
-	gcc $(LOPTS) $(DAOBJS) -o test-da
+da : $(DAOBJS)
+	gcc $(LOPTS) $(DAOBJS) -o da
 cda : $(CDAOBJS)
 	gcc $(LOPTS) $(CDAOBJS) -o cda
 da.o : da.c da.h
 	gcc $(OOPTS) da.c
 cda.o : cda.c cda.h
 	gcc $(OOPTS) cda.c
-test-da.o : test-da.c da.h
-	gcc $(OOPTS) test-da.c
-test-cda2.o : test-cda2.c cda.h
-	gcc $(OOPTS) test-cda2.c
+da-test2.o : da.c da.h
+	gcc $(OOPTS) da-test2.c
+test-cda.o : test-cda.c cda.h
+	gcc $(OOPTS) test-cda.c
 test : da cda
 	./da
 	./cda
