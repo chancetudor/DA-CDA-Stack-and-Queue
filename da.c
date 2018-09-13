@@ -54,7 +54,7 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
+  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); } // possible memory leak
   if (index == sizeDA(items)) {
     items->storage[index] = value;
     items->size += 1;
@@ -63,13 +63,12 @@ extern void insertDA(DA * items, int index, void * value) {
     void * (*temp) = getDA(items, sizeDA(items) - 1);
     for (int i = sizeDA(items) - 1; i >= index; i--) {
       items->storage[i + 1] = temp;
-      temp = items->storage[i - 1];
+      temp = items->storage[i - 1]; // possible memory leak
       items->storage[i + 1] = items->storage[i];
     }
     items->storage[index] = value;
     items->size += 1;
   }
-
   //if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
 }
 
@@ -96,7 +95,7 @@ extern void * removeDA(DA * items, int index) {
 // method doubles array capacity and reallocates memory for new capacity
 static void doubleArray(DA * items) {
   items->capacity = (items->capacity) * 2;
-  items->storage = realloc(items->storage, sizeof(void *) * items->capacity);
+  items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // possibly memory leak
   assert(items->storage != 0);
 }
 
@@ -179,7 +178,7 @@ extern void displayDA(DA * items, FILE *fp) {
       items->displayMethod(items->storage[i], fp);
       if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
     }
-    fprintf(fp, "[%d]]", (getCapacityDA(items) - sizeDA(items)));
+    fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
   }
   else if ((items->displayMethod != 0) && (items->debugVal == 0)) { // display method set and method should not display num. empty indeces
     fprintf(fp, "[");
