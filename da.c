@@ -60,12 +60,7 @@ extern void insertDA(DA * items, int index, void * value) {
     items->size += 1;
   }
   else {
-    //void *temp = getDA(items, sizeDA(items) - 1); // just void *
-    for (int i = sizeDA(items); i >= index + 1; i--) {
-      items->storage[i] = items->storage[i - 1];
-      //temp = items->storage[i - 1]; // possible memory leak
-      //items->storage[i + 1] = items->storage[i];
-    }
+    for (int i = sizeDA(items); i >= index + 1; i--) { items->storage[i] = items->storage[i - 1]; }
     items->storage[index] = value;
     items->size += 1;
   }
