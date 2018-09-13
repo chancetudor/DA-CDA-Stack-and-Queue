@@ -93,6 +93,9 @@ extern void * removeDA(DA * items, int index) {
 
 // method doubles array capacity and reallocates memory for new capacity
 static void doubleArray(DA * items) {
+  items->capacity = (items->capacity) * 2;
+  items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // FIXME: possibly memory leak
+  assert(items->storage != 0);
   /*int newCap = items->capacity * 2;
   void * (*newArray) = malloc(sizeof(void *) * newCap);
   assert(newArray != 0);
@@ -102,9 +105,6 @@ static void doubleArray(DA * items) {
   items->storage = newArray;
   items->capacity = newCap;
   free(newArray);*/
-  items->capacity = (items->capacity) * 2;
-  items->storage = realloc(items->storage, sizeof(void *) * items->capacity); // FIXME: possibly memory leak
-  assert(items->storage != 0);
 }
 
 // method halves array capacity and reallocates memory for new capacity
