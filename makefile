@@ -20,6 +20,6 @@ da-test.o : da.c da.h
 test : da
 	./da 10000
 valgrind : da
-	valgrind --leak-check=full ./da
+	valgrind --leak-check=full ./da 10000
 clean :
 	rm -f $(OBJS) $(CDAOBJS) da #cda
