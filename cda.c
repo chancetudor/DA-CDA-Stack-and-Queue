@@ -88,11 +88,9 @@ extern void insertCDA(CDA *items, int index, void *value) {
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
-      printf("shifting left\n");
-
+      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
     else { // shift right, possibly FIXME
-      printf("shifting right\n");
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
   }
@@ -142,7 +140,6 @@ extern void *removeCDA(CDA * items, int index) {
   }
 
   else {
-    printf("shifting in remove function\n");
     memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
     items->size -= 1;
   }
