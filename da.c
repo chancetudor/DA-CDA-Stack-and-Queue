@@ -69,7 +69,6 @@ extern void insertDA(DA * items, int index, void * value) {
     items->storage[index] = value;
     items->size += 1;
   }
-  //if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
 }
 
 // method removes item at the given index
