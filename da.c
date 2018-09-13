@@ -54,6 +54,7 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
+  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
   if (index == sizeDA(items)) {
     items->storage[index] = value;
     items->size += 1;
@@ -69,7 +70,7 @@ extern void insertDA(DA * items, int index, void * value) {
     items->size += 1;
   }
 
-  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
+  //if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
 }
 
 // method removes item at the given index
@@ -81,10 +82,13 @@ extern void * removeDA(DA * items, int index) {
     //items->storage[i] = items->storage[i + 1];
   //}
   memmove(&items->storage[index], &items->storage[index + 1], ((sizeDA(items) - 1) - index) * sizeof(void *));
-  assert(sizeDA(items) > 0);
   items->size -= 1;
-  if (sizeDA(items)/((double)getCapacityDA(items)) < .25) { halveArray(items); }
-
+  if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
+    halveArray(items);
+    if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
+      halveArray(items);
+    }
+  }
 
   return val;
 }
