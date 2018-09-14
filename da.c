@@ -69,7 +69,7 @@ extern void insertDA(DA * items, int index, void * value) {
 // method shifts each higher element one index down
 // if ratio of array size to array capacity < .25, array shrinks by half
 extern void * removeDA(DA * items, int index) {
-  void * (*val) = getDA(items, index);
+  void * val = getDA(items, index);
   memmove(&items->storage[index], &items->storage[index + 1], ((sizeDA(items) - 1) - index) * sizeof(void *)); // shifting left
   items->size -= 1;
   if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
