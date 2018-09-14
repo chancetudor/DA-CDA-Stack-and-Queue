@@ -94,7 +94,6 @@ extern void insertCDA(CDA *items, int index, void *value) {
     items->size += 1;
   }
   else { // insert in the middle of the CDA
-
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
 
