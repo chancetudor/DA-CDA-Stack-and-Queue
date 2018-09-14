@@ -105,7 +105,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
 
 static void doubleArray(CDA * items) {
   int newCap = items->capacity * 2;
-  void * temp = malloc(sizeof(void*) * newCap);
+  void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
   for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
   items->storage = temp;
@@ -116,7 +116,7 @@ static void doubleArray(CDA * items) {
 
 static void halveArray(CDA * items) {
   int newCap = items->capacity / 2;
-  void * temp = malloc(sizeof(void*) * newCap);
+  void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
   for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
   items->storage = temp;
