@@ -52,17 +52,25 @@ extern void setSTACKfree(STACK * items, void (*freeMeth)(void * ptr)) {
 
 // The push method runs in constant or amortized constant time
 // The value to be pushed is stored in the underlying data structure
-extern void push(STACK *items, void *value);
+extern void push(STACK *items, void *value) {
+  insertDA(items, 0, value);
+}
 
 // The pop method runs in constant or amortized constant time
 // The value to be popped is removed in the underlying data structure.
-extern void *pop(STACK *items);
+extern void *pop(STACK *items) {
+  void * temp = removeDA(items, 0);
+  return temp;
+}
 
 // The peek method returns the value ready to come off the stack, but leaves the stack unchanged
-extern void *peekSTACK(STACK *items);
+extern void *peekSTACK(STACK *items) {
+  void * temp = getDA(items, 0);
+  return temp;
+}
 
 // prints the items stored in the stack
-//An empty stack displays as ||
+// An empty stack displays as ||
 extern void displaySTACK(STACK *items, FILE *fp);
 
 // If the debug method is set to 0, the display method uses STACK display
@@ -71,7 +79,13 @@ extern void displaySTACK(STACK *items, FILE *fp);
 extern int debugSTACK(STACK *items, int level);
 
 
-extern void freeSTACK(STACK *items);
+extern void freeSTACK(STACK *items) {
+  if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
+    for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(items->storage[i]); }
+  }
+  free(items->storage);
+  free(items);
+}
 
 // returns the number of items stored in the stack
-extern int sizeSTACK(STACK *items);
+extern int sizeSTACK(STACK *items) { return items->size; }
