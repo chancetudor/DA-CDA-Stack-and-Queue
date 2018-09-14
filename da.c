@@ -116,7 +116,7 @@ extern void * getDA(DA * items, int index) {
 // method returns null ptr if no value is replaced
 extern void * setDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  void * (*oldVal) = getDA(items, index);
+  void * oldVal = getDA(items, index);
   if (index == sizeDA(items)) {
     insertDA(items, index, value);
     return 0;
@@ -138,13 +138,61 @@ static int getCapacityDA(DA * items) { return items->capacity; }
 // if no display method is set, the address of each item is printed
 // an empty array with capacity 1 displays as [[1]]
 extern void displayDA(DA * items, FILE *fp) {
-  if ((sizeDA(items) == 0) && (items->debugVal > 0)) { // empty array and method should display num. empty indeces
+  /*if ((sizeDA(items) == 0) && (items->debugVal > 0)) {
     fprintf(fp, "[[%d]]", items->capacity);
   }
-  else if ((sizeDA(items) == 0) && (items->debugVal == 0)) { // empty array and method should not display num. empty indeces
+  else if ((sizeDA(items) == 0) && (items->debugVal == 0)) {
     fprintf(fp, "[]");
+  }*/
+
+  if (sizeDA(items) == 0) {
+    if (items->debugVal > 0) { // empty array and method should display num. empty indeces
+      fprintf(fp, "[[%d]]", items->capacity);
+    }
+    else { // empty array and method should not display num. empty indeces
+      fprintf(fp, "[]");
+    }
   }
-  else if ((items->displayMethod == 0) && (items->debugVal > 0)) { // no display method set and method should display num. empty indeces
+
+  else if (items->displayMethod == 0) {
+    if (items->debugVal > 0) { // no display method set and method should display num. empty indeces
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        fprintf(fp, "@%p", &items->storage[i]); // no set display method forces addresses of each item to be printed
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
+    }
+    else { // no display method set and method should not display num. empty indeces
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        fprintf(fp, "@%p", &items->storage[i]);
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "]");
+    }
+  }
+
+  else {
+    if (items->debugVal > 0) { // display method set and method should display num. empty indeces
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        items->displayMethod(items->storage[i], fp);
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
+    }
+    else { // display method set and method should not display num. empty indeces
+      fprintf(fp, "[");
+      for (int i = 0; i < sizeDA(items); i++) {
+        items->displayMethod(items->storage[i], fp);
+        if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "]");
+    }
+  }
+
+  /*else if ((items->displayMethod == 0) && (items->debugVal > 0)) {
     fprintf(fp, "[");
     for (int i = 0; i < sizeDA(items); i++) {
       fprintf(fp, "@%p", &items->storage[i]); // no set display method forces addresses of each item to be printed
@@ -152,7 +200,7 @@ extern void displayDA(DA * items, FILE *fp) {
     }
     fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
   }
-  else if ((items->displayMethod == 0) && (items->debugVal == 0)) { // no display method set and method should not display num. empty indeces
+  else if ((items->displayMethod == 0) && (items->debugVal == 0)) {
     fprintf(fp, "[");
     for (int i = 0; i < sizeDA(items); i++) {
       fprintf(fp, "@%p", &items->storage[i]);
@@ -160,7 +208,7 @@ extern void displayDA(DA * items, FILE *fp) {
     }
     fprintf(fp, "]");
   }
-  else if ((items->displayMethod != 0) && (items->debugVal > 0)) { // display method set and method should display num. empty indeces
+  else if ((items->displayMethod != 0) && (items->debugVal > 0)) {
     fprintf(fp, "[");
     for (int i = 0; i < sizeDA(items); i++) {
       items->displayMethod(items->storage[i], fp);
@@ -175,7 +223,7 @@ extern void displayDA(DA * items, FILE *fp) {
       if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
     }
     fprintf(fp, "]");
-  }
+  }*/
 }
 
 // method sets an internal flag in the object to the given value
