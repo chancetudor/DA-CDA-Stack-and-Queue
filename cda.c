@@ -77,6 +77,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
   if (index == 0) {
     printf("FIXME: inserting at index 0\n");
     items->startIndex = correctIndex(items, getStartCDA(items) - 1);
+    printf("Start index now = %d\n", getStartCDA(items));
     items->storage[getStartCDA(items)] = value;
     items->size += 1;
   }
@@ -84,11 +85,14 @@ extern void insertCDA(CDA *items, int index, void *value) {
     printf("FIXME: inserting at back of array, index = %d\n", correctIndex(items, getEndCDA(items) + 1));
     items->storage[getEndCDA(items)] = value;
     items->endIndex = correctIndex(items, getEndCDA(items) + 1);
+    printf("End index now = %d\n", getEndCDA(items));
     items->size += 1;
   }
   else { // insert in the middle of the CDA
+    printf("FIXME: Inserting in middle of array\n");
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
+    printf("Insertion index = %d\n", trueIndex);
     printf("FIXME: inserting at back of array, index = %d\n", trueIndex);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
@@ -101,7 +105,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
 
 static void doubleArray(CDA * items) {
   int newCap = items->capacity * 2;
-  void * (*temp) = malloc(sizeof(void*) * newCap);
+  void * temp = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
   for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
   items->storage = temp;
@@ -112,7 +116,7 @@ static void doubleArray(CDA * items) {
 
 static void halveArray(CDA * items) {
   int newCap = items->capacity / 2;
-  void * (*temp) = malloc(sizeof(void*) * newCap);
+  void * temp = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
   for (int i = 0; i < sizeCDA(items) - 1; i++) { temp[i] = items->storage[(getStartCDA(items) + i) % sizeCDA(items)]; }
   items->storage = temp;
@@ -131,7 +135,7 @@ static int getEndCDA(CDA * items) { return items->endIndex; }
 // array should never shrink below a capacity of one
 extern void *removeCDA(CDA * items, int index) {
   int trueIndex = correctIndex(items, index);
-  void * (*value) = getCDA(items, trueIndex);
+  void * value = getCDA(items, trueIndex);
   if (index == 0) {
     items->startIndex = correctIndex(items, items->startIndex + 1);
     items->size -= 1;
@@ -162,8 +166,11 @@ extern void *removeCDA(CDA * items, int index) {
 extern void unionCDA(CDA *recipient, CDA *donor) {
   for (int i = 0; i < sizeCDA(donor); i++) {
     insertCDAback(recipient, getCDA(donor, i));
-    removeCDAfront(donor);
   }
+  donor->size = 0;
+  donor->capacity = 1;
+  free(donor->storage);
+  donor->storage = malloc(sizeof(void *) * 1);
 }
 
 // method returns the value at the given index, from user's perspective
@@ -182,7 +189,7 @@ extern void *getCDA(CDA *items, int index) {
 extern void *setCDA(CDA *items, int index, void *value) {
   assert(index >= -1 && index <= sizeCDA(items));
   int trueIndex = correctIndex(items, index + getStartCDA(items));
-  void * (*val) = getCDA(items, trueIndex);
+  void * val = getCDA(items, trueIndex);
   if (index == sizeCDA(items)) {
     insertCDAback(items, value);
     return val;

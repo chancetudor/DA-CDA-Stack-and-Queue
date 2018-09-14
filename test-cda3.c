@@ -48,8 +48,10 @@ main(void)
     setCDAdisplay(p,displayINTEGER);
     debugCDA(p,1);
     display(p,"items: ");
+    printf("Inserting now\n");
     for (i = 0; i < 2; ++i)
         {
+        printf("Round %d\n", i);
         insertCDA(p,0,newINTEGER(3));
         insertCDA(p,1,newINTEGER(2));
         insertCDA(p,0,newINTEGER(4));
