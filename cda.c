@@ -160,6 +160,7 @@ static int getIndex(CDA * items, int oldIndex) {
 // array should never shrink below a capacity of one
 extern void *removeCDA(CDA * items, int index) {
   assert(index >= 0 && index <= sizeCDA(items) - 1);
+  assert(sizeCDA(items) > 0);
   int trueIndex = correctIndex(items, index);
   void * value = getCDA(items, trueIndex);
 
@@ -191,8 +192,6 @@ extern void *removeCDA(CDA * items, int index) {
 
     items->size -= 1;
   }
-
-  assert(sizeCDA(items) > 0);
   if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
     halveArray(items);
     if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
