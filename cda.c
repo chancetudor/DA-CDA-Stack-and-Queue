@@ -84,7 +84,9 @@ extern void insertCDA(CDA *items, int index, void *value) {
     items->size += 1;
   }
   else if (sizeCDA(items) == 0 || index == sizeCDA(items)) {
-    printf("FIXME: inserting at back of array, true index = %d\n", correctIndex(items, getEndCDA(items) + 1));
+    printf("FIXME: inserting at back of array, true index = %d\n",
+    correctIndex(items, getEndCDA(items) + 1));
+
     printf("FIXME: End index was = %d\n", getEndCDA(items));
 
     items->storage[getEndCDA(items)] = value;
@@ -101,13 +103,17 @@ extern void insertCDA(CDA *items, int index, void *value) {
     printf("FIXME: decision point = %d\n", decisionPt);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       printf("FIXME: Shifting left\n");
-      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (
+      sizeCDA(items) - trueIndex - 1) * sizeof(items));
+
       items->storage[trueIndex] = value;
     }
     else { // shift right, possibly FIXME
       printf("FIXME: Shifting right\n");
       //for (int i = sizeCDA(items); i >= trueIndex + 1; i--) { items->storage[i] = items->storage[i - 1]; }
-      memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+      memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex],
+      (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+
       items->storage[trueIndex] = value;
     }
     items->size += 1;
@@ -147,20 +153,36 @@ static int getEndCDA(CDA * items) { return items->endIndex; }
 // if ratio of size to capacity < .25 array shrinks by half
 // array should never shrink below a capacity of one
 extern void *removeCDA(CDA * items, int index) {
+  assert( (index >= (getStartCDA(items) % getCapacityCDA(items)) && (index <= getEndCDA(items) % getCapacityCDA(items))));
+
   int trueIndex = correctIndex(items, index);
   void * value = getCDA(items, trueIndex);
-  if (index == 0) {
-    items->startIndex = correctIndex(items, items->startIndex + 1);
+  if (trueIndex == getStartCDA(items)) {
+    items->startIndex = correctIndex(items, getStartCDA(items) + 1);
     items->size -= 1;
   }
 
-  else if (index == sizeCDA(items) - 1) {
-    items->endIndex = correctIndex(items, items->endIndex - 1);
+  else if (trueIndex == getEndCDA(items)) {
+    items->endIndex = correctIndex(items, getEndCDA(items) - 1);
     items->size -= 1;
   }
 
   else {
-    memmove(&items->storage[trueIndex], &items->storage[trueIndex +  1], (sizeCDA(items) - trueIndex - 1) * sizeCDA(items));
+    int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for removal
+    if (trueIndex <= decisionPt) { // shift left
+      printf("Shifting left in removeCDA()\n");
+      printf("true index = %d || size = %d\n", trueIndex, sizeCDA(items));
+      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1],
+      (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+
+    }
+
+    else { // shift right
+      printf("shifting right in removeCDA()\n");
+      memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex],
+      (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+    }
+
     items->size -= 1;
   }
 
