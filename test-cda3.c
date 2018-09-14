@@ -63,8 +63,10 @@ main(void)
         debugCDA(p,0);
         }
     printf("Insertion finished\n");
+    display(p,"items: ");
     printf("Freeing integer\n");
     freeINTEGER(removeCDA(p,1));
+    printf("Integer freed\n");
     display(p,"items: ");
     printf("Freeing integer\n");
     freeINTEGER(removeCDA(p,sizeCDA(p)-1));
