@@ -9,9 +9,6 @@
 //  Copyright © 2018 Chance Tudor. All rights reserved.
 //
 
-typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in stack struct
-typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in stack struct
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -19,22 +16,28 @@ typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a disp
 #include "stack.h"
 #include "da.h"
 
+typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in stack struct
+typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in stack struct
+
 struct stack {
-  void * (*storage);
-  int capacity;
-  int size;
+  //void * (*storage);
+  //int capacity;
+  //int size;
+  DA * array;
   int debugVal;
   FM freeMethod;
   DM displayMethod;
-}
+};
 
 extern STACK * newStack(void) {
   STACK * stack = malloc(sizeof(STACK));
   assert(stack != 0);
-  stack->capacity = 1;
-  stack->storage = newDA();
-  assert(stack->storage != 0);
-  stack->size = 0;
+  stack->array = newDA();
+  assert(stack->array != 0);
+  //stack->capacity = 1;
+  //stack->storage = array->storage;
+  //assert(stack->storage != 0);
+  //stack->size = array->size;
   stack->debugVal = 0;
   stack->freeMethod = 0;
   stack->displayMethod = 0;
@@ -53,19 +56,19 @@ extern void setSTACKfree(STACK * items, void (*freeMeth)(void * ptr)) {
 // The push method runs in constant or amortized constant time
 // The value to be pushed is stored in the underlying data structure
 extern void push(STACK *items, void *value) {
-  insertDA(items, 0, value);
+  insertDA(items->array->storage, 0, value);
 }
 
 // The pop method runs in constant or amortized constant time
 // The value to be popped is removed in the underlying data structure.
 extern void *pop(STACK *items) {
-  void * temp = removeDA(items, 0);
+  void * temp = removeDA(items->array->storage, 0);
   return temp;
 }
 
-// The peek method returns the value ready to come off the stack, but leaves the stack unchanged
+// returns value ready to come off the stack, but leaves stack unchanged
 extern void *peekSTACK(STACK *items) {
-  void * temp = getDA(items, 0);
+  void * temp = getDA(items->array->storage, 0);
   return temp;
 }
 
@@ -73,19 +76,19 @@ extern void *peekSTACK(STACK *items) {
 // An empty stack displays as ||
 extern void displaySTACK(STACK *items, FILE *fp);
 
-// If the debug method is set to 0, the display method uses STACK display
-// if the debug level is set to one, the display method uses the underlying data structure's display method
-// If the debug method is set to two, the display method uses the underlying data structure's debugged display method
+// If the debug level == 0, display method uses STACK display
+// if debug level == one, display method uses underlying data structure's display method
+// If debug level == two, display method uses underlying data structure's debugged display method
 extern int debugSTACK(STACK *items, int level);
 
 
 extern void freeSTACK(STACK *items) {
   if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
-    for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(items->storage[i]); }
+    for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(items->array->storage[i]); }
   }
-  free(items->storage);
+  free(items->array);
   free(items);
 }
 
 // returns the number of items stored in the stack
-extern int sizeSTACK(STACK *items) { return items->size; }
+extern int sizeSTACK(STACK *items) { return sizeDA(items->array); }
