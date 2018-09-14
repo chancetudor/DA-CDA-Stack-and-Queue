@@ -153,7 +153,7 @@ static int getEndCDA(CDA * items) { return items->endIndex; }
 // if ratio of size to capacity < .25 array shrinks by half
 // array should never shrink below a capacity of one
 extern void *removeCDA(CDA * items, int index) {
-  assert( (index >= (getStartCDA(items) % getCapacityCDA(items)) && (index <= getEndCDA(items) % getCapacityCDA(items))));
+  assert(index >= 0 && index <= sizeCDA(items) - 1);
 
   int trueIndex = correctIndex(items, index);
   void * value = getCDA(items, trueIndex);
@@ -171,16 +171,13 @@ extern void *removeCDA(CDA * items, int index) {
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for removal
     if (trueIndex <= decisionPt) { // shift left
       printf("Shifting left in removeCDA()\n");
-      printf("true index = %d || size = %d\n", trueIndex, sizeCDA(items));
-      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1],
-      (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+
 
     }
 
     else { // shift right
       printf("shifting right in removeCDA()\n");
-      memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex],
-      (sizeCDA(items) - trueIndex - 1) * sizeof(items));
+
     }
 
     items->size -= 1;
