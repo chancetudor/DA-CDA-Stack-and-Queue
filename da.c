@@ -116,7 +116,7 @@ extern void * getDA(DA * items, int index) {
 // method returns null ptr if no value is replaced
 extern void * setDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  void * (*oldVal) = getDA(items, index);
+  void * oldVal = getDA(items, index);
   if (index == sizeDA(items)) {
     insertDA(items, index, value);
     return 0;
