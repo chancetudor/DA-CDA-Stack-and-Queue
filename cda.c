@@ -73,6 +73,7 @@ static int correctIndex(CDA *items, int oldIndex) {
 // if no room for insertion, array grows by doubling
 extern void insertCDA(CDA *items, int index, void *value) {
   assert(index >= 0 && index <= sizeCDA(items));
+  if (isFull(items) == true) { doubleArray(items); }
   if (index == 0) {
     printf("FIXME: inserting at index 0\n");
     items->startIndex = correctIndex(items, getStartCDA(items) - 1);
@@ -96,7 +97,6 @@ extern void insertCDA(CDA *items, int index, void *value) {
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
     }
   }
-  if (isFull(items) == true) { doubleArray(items); }
 }
 
 static void doubleArray(CDA * items) {
@@ -148,7 +148,12 @@ extern void *removeCDA(CDA * items, int index) {
   }
 
   assert(sizeCDA(items) > 0);
-  if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) { halveArray(items); }
+  if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
+    halveArray(items);
+    if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
+      halveArray(items);
+    }
+  }
 
   return value;
 }
@@ -201,21 +206,65 @@ static int getCapacityCDA(CDA * items) { return items->capacity; }
 
 // FIXME
 extern void displayCDA(CDA *items, FILE *fp) {
-  if ((sizeCDA(items) == 0) && (items->debugVal > 0)) { // empty array and method should display num. empty indeces
+  /*if ((sizeCDA(items) == 0) && (items->debugVal > 0)) {
     fprintf(fp, "((%d))", items->capacity);
   }
-  else if ((sizeCDA(items) == 0) && (items->debugVal == 0)) { // empty array and method should not display num. empty indeces
+  else if ((sizeCDA(items) == 0) && (items->debugVal == 0)) {
     fprintf(fp, "()");
+  }*/
+
+  if (sizeCDA(items) == 0) {
+    if (items->debugVal > 0) { fprintf(fp, "((%d))", items->capacity); } // empty array and method should display num. empty indeces
+    else { fprintf(fp, "()"); } // empty array and method should not display num. empty indeces
   }
-  else if ((items->displayMethod == 0) && (items->debugVal > 0)) { // no display method set and method should display num. empty indeces
+
+  else if (items->displayMethod == 0) {
+    if (items->debugVal > 0) { // no display method set and method should display num. empty indeces
+      fprintf(fp, "(");
+      for (int i = 0; i < sizeCDA(items); i++) {
+        //FIXME: figure out a way to use getCDA() to print CDA
+        fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      }
+      fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
+    }
+    else { // no display method set and method should not display num. empty indeces
+      fprintf(fp, "(");
+      for (int i = 0; i < sizeCDA(items); i++) {
+        //FIXME: figure out a way to use getCDA() to print CDA
+        fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      }
+      fprintf(fp, ")");
+    }
+  }
+
+  else {
+    if (items->debugVal > 0) { // display method set and method should display num. empty indeces
+      fprintf(fp, "(");
+      for (int i = 0; i < sizeCDA(items); i++) {
+        items->displayMethod(getCDA(items, i), fp);
+        if (i != (sizeCDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
+    }
+    else { // display method set and method should not display num. empty indeces
+      fprintf(fp, "(");
+      for (int i = 0; i < sizeCDA(items); i++) {
+        items->displayMethod(getCDA(items, i), fp);
+        if (i != (sizeCDA(items) - 1)) { fprintf(fp, ","); }
+      }
+      fprintf(fp, ")");
+    }
+  }
+
+  /*else if ((items->displayMethod == 0) && (items->debugVal > 0)) {
     fprintf(fp, "(");
     for (int i = 0; i < sizeCDA(items); i++) {
       //FIXME: figure out a way to use getCDA() to print CDA
-      fprintf(fp, "@%p,", &items->storage[i]); // no set display method forces addresses of each item to be printed
+      fprintf(fp, "@%p,", &items->storage[i]);
     }
     fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
   }
-  else if ((items->displayMethod == 0) && (items->debugVal == 0)) { // no display method set and method should not display num. empty indeces
+  else if ((items->displayMethod == 0) && (items->debugVal == 0)) {
     fprintf(fp, "(");
     for (int i = 0; i < sizeCDA(items); i++) {
       //FIXME: figure out a way to use getCDA() to print CDA
@@ -223,7 +272,7 @@ extern void displayCDA(CDA *items, FILE *fp) {
     }
     fprintf(fp, ")");
   }
-  else if ((items->displayMethod != 0) && (items->debugVal > 0)) { // display method set and method should display num. empty indeces
+  else if ((items->displayMethod != 0) && (items->debugVal > 0)) {
     fprintf(fp, "(");
     for (int i = 0; i < sizeCDA(items); i++) {
       items->displayMethod(getCDA(items, i), fp);
@@ -231,14 +280,14 @@ extern void displayCDA(CDA *items, FILE *fp) {
     }
     fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
   }
-  else if ((items->displayMethod != 0) && (items->debugVal == 0)) { // display method set and method should not display num. empty indeces
+  else if ((items->displayMethod != 0) && (items->debugVal == 0)) {
     fprintf(fp, "(");
     for (int i = 0; i < sizeCDA(items); i++) {
       items->displayMethod(getCDA(items, i), fp);
       if (i != (sizeCDA(items) - 1)) { fprintf(fp, ","); }
     }
-  fprintf(fp, ")");
-  }
+    fprintf(fp, ")");
+  }*/
 }
 
 extern int debugCDA(CDA *items, int level) {
