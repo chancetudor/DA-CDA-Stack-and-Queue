@@ -102,7 +102,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
     printf("FIXME: decision point = %d\n", decisionPt);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
       printf("FIXME: Shifting left\n");
-      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(void *));
+      memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (sizeCDA(items) - trueIndex - 1) * sizeof(items));
       items->storage[trueIndex] = value;
     }
     else { // shift right, possibly FIXME
@@ -116,7 +116,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
 }
 
 static void doubleArray(CDA * items) {
-  //printf("FIXME: doubling array, old cap was = %d\n", getCapacityCDA(items));
+  printf("FIXME: doubling array\n");
   int newCap = items->capacity * 2;
   void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
@@ -125,7 +125,7 @@ static void doubleArray(CDA * items) {
   items->startIndex = 0;
   items->endIndex = sizeCDA(items) - 1;
   items->capacity = newCap;
-  //printf("FIXME: new cap = %d\n", getCapacityCDA(items));
+  printf("FIXME: new cap = %d\n", getCapacityCDA(items));
 }
 
 static void halveArray(CDA * items) {
