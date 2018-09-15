@@ -78,12 +78,22 @@ extern void *peekSTACK(STACK *items) {
 // An empty stack displays as ||
 extern void displaySTACK(STACK *items, FILE *fp) {
   if (items->debugVal == 0) { // use STACK display method
-    fprintf(fp, "|");
-    for (int i = sizeSTACK(items) - 1; i >= 0; i--) {
-      items->displayMethod(getDA(items->array, i), fp);
-      if (i != 0) { fprintf(fp, ","); }
+    if (items->displayMethod == 0) {
+      fprintf(fp, "|");
+      for (int i = sizeSTACK(items) - 1; i >= 0; i--) {
+        items->displayMethod(&items->array->storage[i], fp);
+        if (i != 0) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "|");
     }
-    fprintf(fp, "|");
+    else {
+      fprintf(fp, "|");
+      for (int i = sizeSTACK(items) - 1; i >= 0; i--) {
+        items->displayMethod(getDA(items->array, i), fp);
+        if (i != 0) { fprintf(fp, ","); }
+      }
+      fprintf(fp, "|");
+    }
   }
 
   else if (items->debugVal == 1) { // use DA display method
@@ -114,7 +124,7 @@ extern void freeSTACK(STACK *items) {
   //if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
     //for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(getDA(items->array, i)); }
   //}
-  free(items->array);
+  freeDA(items->array);
   free(items);
 }
 
