@@ -1,29 +1,29 @@
 OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
 DAOBJS = da.o da-test2.o integer.o
-CDAOBJS = cda.o test-cda.o integer.o
+#CDAOBJS = cda.o test-cda.o integer.o
 
-all : da cda
+all : da #cda
 
 da : $(DAOBJS)
 	gcc $(LOPTS) $(DAOBJS) -o da
-cda : $(CDAOBJS)
-	gcc $(LOPTS) $(CDAOBJS) -o cda
+#cda : $(CDAOBJS)
+	#gcc $(LOPTS) $(CDAOBJS) -o cda
 integer.o : integer.c integer.h
 	gcc $(OOPTS) integer.c
 da.o : da.c da.h
 	gcc $(OOPTS) da.c
-cda.o : cda.c cda.h
-	gcc $(OOPTS) cda.c
+#cda.o : cda.c cda.h
+	#gcc $(OOPTS) cda.c
 da-test2.o : da.c da.h
 	gcc $(OOPTS) da-test2.c
-test-cda.o : test-cda.c cda.h
-	gcc $(OOPTS) test-cda.c
-test : da cda
+#test-cda.o : test-cda.c cda.h
+	#gcc $(OOPTS) test-cda.c
+test : da #cda
 	./da
-	./cda
+	#./cda
 valgrind : da cda
 	valgrind --leak-check=full ./da
-	valgrind --leak-check=full ./cda
+	#valgrind --leak-check=full ./cda
 clean :
-	rm -f $(DAOBJS) $(CDAOBJS) da cda
+	rm -f $(DAOBJS) da #cda $(CDAOBJS)

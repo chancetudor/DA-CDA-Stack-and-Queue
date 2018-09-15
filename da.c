@@ -69,10 +69,10 @@ extern void insertDA(DA * items, int index, void * value) {
 // method shifts each higher element one index down
 // if ratio of array size to array capacity < .25, array shrinks by half
 extern void * removeDA(DA * items, int index) {
+  assert(sizeDA(items) > 0);
   void * val = getDA(items, index);
   memmove(&items->storage[index], &items->storage[index + 1], ((sizeDA(items) - 1) - index) * sizeof(void *)); // shifting left
   items->size -= 1;
-  assert(sizeDA(items) > 0);
   if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
     halveArray(items);
     if (sizeDA(items)/((double)getCapacityDA(items)) < .25) {
@@ -178,7 +178,7 @@ extern void displayDA(DA * items, FILE *fp) {
     if (items->debugVal > 0) { // display method set and method should display num. empty indeces
       fprintf(fp, "[");
       for (int i = 0; i < sizeDA(items); i++) {
-        items->displayMethod(items->storage[i], fp);
+        items->displayMethod(getDA(items, i), fp);
         if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
       }
       fprintf(fp, ",[%d]]", (getCapacityDA(items) - sizeDA(items)));
@@ -186,7 +186,7 @@ extern void displayDA(DA * items, FILE *fp) {
     else { // display method set and method should not display num. empty indeces
       fprintf(fp, "[");
       for (int i = 0; i < sizeDA(items); i++) {
-        items->displayMethod(items->storage[i], fp);
+        items->displayMethod(getDA(items, i), fp);
         if (i != (sizeDA(items) - 1)) { fprintf(fp, ","); }
       }
       fprintf(fp, "]");
@@ -238,7 +238,7 @@ extern int debugDA(DA * items, int level) {
 // method frees dynamic array
 extern void freeDA(DA * items) {
   if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
-    for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(items->storage[i]); }
+    for (int i = 0; i < sizeDA(items); i++) { items->freeMethod(getDA(items, i)); }
   }
   free(items->storage);
   free(items);
