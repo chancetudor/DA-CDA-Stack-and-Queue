@@ -58,47 +58,49 @@ extern void setSTACKfree(STACK * items, void (*freeMeth)(void * ptr)) {
 // The push method runs in constant or amortized constant time
 // The value to be pushed is stored in the underlying data structure
 extern void push(STACK *items, void *value) {
-  insertDA(items->array, 0, value);
+  insertDA(items->array, sizeDA(items->array), value);
 }
 
 // The pop method runs in constant or amortized constant time
 // The value to be popped is removed in the underlying data structure.
 extern void *pop(STACK *items) {
-  void * temp = removeDA(items->array, 0);
+  void * temp = removeDA(items->array, sizeDA(items->array) - 1);
   return temp;
 }
 
 // returns value ready to come off the stack, but leaves stack unchanged
 extern void *peekSTACK(STACK *items) {
-  void * temp = getDA(items->array, 0);
+  void * temp = getDA(items->array, sizeDA(items->array) - 1);
   return temp;
 }
 
 // prints the items stored in the stack
 // An empty stack displays as ||
 extern void displaySTACK(STACK *items, FILE *fp) {
-  if (items->debugVal == 0) {
+  if (items->debugVal == 0) { // use STACK display method
     fprintf(fp, "|");
-    for (int i = 0; i < sizeSTACK(items); i++) {
+    for (int i = sizeSTACK(items) - 1; i >= 0; i--) {
       items->displayMethod(getDA(items->array, i), fp);
-      if (i != (sizeSTACK(items) - 1)) { fprintf(fp, ","); }
+      if (i != 0) { fprintf(fp, ","); }
     }
     fprintf(fp, "|");
   }
 
-  else if (items->debugVal == 1) {
+  else if (items->debugVal == 1) { // use DA display method
     debugDA(items->array, 0);
+    items->array->displayMethod = items->displayMethod;
     displayDA(items->array, fp);
   }
-  else {
+  else { // use DA display method with debugVal > 0
     debugDA(items->array, 1);
+    items->array->displayMethod = items->displayMethod;
     displayDA(items->array, fp);
   }
 }
 
 // If the debug level == 0, display method uses STACK display
-// if debug level == one, display method uses underlying data structure's display method
-// If debug level == two, display method uses underlying data structure's debugged display method
+// if debug level == 1, display method uses underlying data structure's display method
+// If debug level == 2, display method uses underlying data structure's debugged display method
 extern int debugSTACK(STACK *items, int level) {
   int prevVal = items->debugVal;
   items->debugVal = level;
