@@ -110,9 +110,10 @@ extern int debugSTACK(STACK *items, int level) {
 
 
 extern void freeSTACK(STACK *items) {
-  if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
-    for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(getDA(items->array, i)); }
-  }
+  setDAfree(items->array, items->freeMethod);
+  //if (items->freeMethod != 0) { // individual items are only freed if a freeMethod is set
+    //for (int i = 0; i < sizeSTACK(items); i++) { items->freeMethod(getDA(items->array, i)); }
+  //}
   free(items->array);
   free(items);
 }
