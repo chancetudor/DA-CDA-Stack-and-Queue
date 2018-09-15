@@ -18,7 +18,6 @@
 
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in stack struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in stack struct
-//static int getCapacitySTACK(STACK * items);
 
 struct da {
   void * (*storage);
@@ -30,9 +29,6 @@ struct da {
 };
 
 struct stack {
-  //void * (*storage);
-  //int capacity;
-  //int size;
   DA * array;
   int debugVal;
   FM freeMethod;
@@ -44,10 +40,6 @@ extern STACK * newSTACK(void) {
   assert(stack != 0);
   stack->array = newDA();
   assert(stack->array != 0);
-  //stack->capacity = 1;
-  //stack->storage = array->storage;
-  //assert(stack->storage != 0);
-  //stack->size = array->size;
   stack->debugVal = 0;
   stack->freeMethod = 0;
   stack->displayMethod = 0;
@@ -94,53 +86,6 @@ extern void displaySTACK(STACK *items, FILE *fp) {
     fprintf(fp, "|");
   }
 
-    /*if (sizeSTACK(items) == 0) {
-      if (items->debugVal > 0) { // empty array and method should display num. empty indeces
-        fprintf(fp, "||%d||", getCapacitySTACK(items));
-      }
-      else { // empty array and method should not display num. empty indeces
-        fprintf(fp, "||");
-      }
-    }
-
-    else if (items->displayMethod == 0) {
-      if (items->debugVal > 0) { // no display method set and method should display num. empty indeces
-        fprintf(fp, "|");
-        for (int i = 0; i < sizeSTACK(items); i++) {
-          fprintf(fp, "@%p", &items->array->storage[i]); // no set display method forces addresses of each item to be printed
-          if (i != (sizeSTACK(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, ",|%d||", (getCapacitySTACK(items) - sizeSTACK(items)));
-      }
-      else { // no display method set and method should not display num. empty indeces
-        fprintf(fp, "|");
-        for (int i = 0; i < sizeSTACK(items); i++) {
-          fprintf(fp, "@%p", &items->array->storage[i]);
-          if (i != (sizeSTACK(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, "|");
-      }
-    }
-
-    else {
-      if (items->debugVal > 0) { // display method set and method should display num. empty indeces
-        fprintf(fp, "|");
-        for (int i = 0; i < sizeSTACK(items); i++) {
-          items->displayMethod(items->array->storage[i], fp);
-          if (i != (sizeSTACK(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, ",|%d||", (getCapacitySTACK(items) - sizeSTACK(items)));
-      }
-      else { // display method set and method should not display num. empty indeces
-        fprintf(fp, "|");
-        for (int i = 0; i < sizeSTACK(items); i++) {
-          items->displayMethod(items->array->storage[i], fp);
-          if (i != (sizeSTACK(items) - 1)) { fprintf(fp, ","); }
-        }
-        fprintf(fp, "|");
-      }
-    }
-  }*/
   else if (items->debugVal == 1) {
     debugDA(items->array, 0);
     displayDA(items->array, fp);
@@ -172,5 +117,3 @@ extern void freeSTACK(STACK *items) {
 
 // returns the number of items stored in the stack
 extern int sizeSTACK(STACK *items) { return sizeDA(items->array); }
-
-//static int getCapacitySTACK(STACK * items) { return items->array->capacity; }
