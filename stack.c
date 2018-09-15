@@ -19,6 +19,15 @@
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in stack struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in stack struct
 
+struct da {
+  void * (*storage);
+  int capacity;
+  int size;
+  int debugVal;
+  FM freeMethod;
+  DM displayMethod;
+};
+
 struct stack {
   //void * (*storage);
   //int capacity;
@@ -56,19 +65,19 @@ extern void setSTACKfree(STACK * items, void (*freeMeth)(void * ptr)) {
 // The push method runs in constant or amortized constant time
 // The value to be pushed is stored in the underlying data structure
 extern void push(STACK *items, void *value) {
-  insertDA(items->array->storage, 0, value);
+  insertDA(items->array, 0, value);
 }
 
 // The pop method runs in constant or amortized constant time
 // The value to be popped is removed in the underlying data structure.
 extern void *pop(STACK *items) {
-  void * temp = removeDA(items->array->storage, 0);
+  void * temp = removeDA(items->array, 0);
   return temp;
 }
 
 // returns value ready to come off the stack, but leaves stack unchanged
 extern void *peekSTACK(STACK *items) {
-  void * temp = getDA(items->array->storage, 0);
+  void * temp = getDA(items->array, 0);
   return temp;
 }
 

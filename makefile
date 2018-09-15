@@ -2,7 +2,7 @@ OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
 DAOBJS = da.o da-test2.o integer.o
 #CDAOBJS = cda.o test-cda3.o integer.o
-STACKOBJS = stack.o stack-test.0 integer.o
+STACKOBJS = stack.o stack-test.o integer.o
 
 all : da stack #cda
 
@@ -35,4 +35,4 @@ valgrind : da stack #cda
 	#valgrind --leak-check=full ./cda
 	valgrind --leak-check=full ./stack
 clean :
-	rm -f $(DAOBJS) $(CDAOBJS) $(STACKOBJS) da stack #cda
+	rm -f $(DAOBJS) $(STACKOBJS) da stack #cda $(CDAOBJS)
