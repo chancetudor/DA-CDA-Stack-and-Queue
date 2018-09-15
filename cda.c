@@ -160,6 +160,7 @@ static int getIndex(CDA * items, int oldIndex) {
 // array should never shrink below a capacity of one
 extern void *removeCDA(CDA * items, int index) {
   assert(index >= 0 && index <= sizeCDA(items) - 1);
+  assert(sizeCDA(items) > 0);
   int trueIndex = correctIndex(items, index);
   void * value = getCDA(items, trueIndex);
 
@@ -191,8 +192,6 @@ extern void *removeCDA(CDA * items, int index) {
 
     items->size -= 1;
   }
-
-  assert(sizeCDA(items) > 0);
   if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
     halveArray(items);
     if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
@@ -265,7 +264,6 @@ extern void displayCDA(CDA *items, FILE *fp) {
       printf("Display method not set, displaying num. empty indeces\n");
       fprintf(fp, "(");
       for (int i = 0; i < sizeCDA(items); i++) {
-        //FIXME: figure out a way to use getCDA() to print CDA
         fprintf(fp, "@%p,", &items->storage[getIndex(items, i)]); // no set display method forces addresses of each item to be printed
       }
       fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
@@ -274,7 +272,6 @@ extern void displayCDA(CDA *items, FILE *fp) {
       printf("Display method not set, not displaying num. empty indeces\n");
       fprintf(fp, "(");
       for (int i = 0; i < sizeCDA(items); i++) {
-        //FIXME: figure out a way to use getCDA() to print CDA
         fprintf(fp, "@%p,", &items->storage[getIndex(items, i)]); // no set display method forces addresses of each item to be printed
       }
       fprintf(fp, ")");
@@ -292,8 +289,6 @@ extern void displayCDA(CDA *items, FILE *fp) {
     }
     else { // display method set and method should not display num. empty indeces
       printf("Display method set, not displaying num. empty indeces\n");
-      printf("Capacity = %d\n", getCapacityCDA(items));
-      printf("Size = %d\n", sizeCDA(items));
       fprintf(fp, "(");
       for (int i = 0; i < sizeCDA(items); i++) {
         items->displayMethod(getCDA(items, i), fp);
