@@ -88,12 +88,12 @@ extern void displaySTACK(STACK *items, FILE *fp) {
 
   else if (items->debugVal == 1) { // use DA display method
     debugDA(items->array, 0);
-    items->array->displayMethod = items->displayMethod;
+    setDAdisplay(items->array, items->displayMethod);
     displayDA(items->array, fp);
   }
   else { // use DA display method with debugVal > 0
     debugDA(items->array, 1);
-    items->array->displayMethod = items->displayMethod;
+    setDAdisplay(items->array, items->displayMethod);
     displayDA(items->array, fp);
   }
 }
