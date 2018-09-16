@@ -36,7 +36,7 @@ main(void)
     setSTACKfree(p,freeINTEGER);
     setSTACKdisplay(p,displayINTEGER);
     display(p,"items: ");
-    for (i = 0; i < 5000; ++i)
+    for (i = 0; i < 199; ++i)
         {
         push(p,newINTEGER(3));
         push(p,newINTEGER(2));
