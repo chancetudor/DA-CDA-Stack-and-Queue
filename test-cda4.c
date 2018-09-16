@@ -46,9 +46,9 @@ main(void)
     CDA *p = newCDA();
     setCDAfree(p,freeINTEGER);
     setCDAdisplay(p,displayINTEGER);
-
     debugCDA(p,1);
-    //display(p,"items: ");
+
+    display(p,"items: ");
     insertCDA(p,0,newINTEGER(3));
 
     insertCDA(p,1,newINTEGER(2));
@@ -61,12 +61,9 @@ main(void)
 
     display(p,"items: ");
 
-
-
     //debugCDA(p,0);
 
     //insertCDA(p,0,newINTEGER(3));
-
 
     /*insertCDA(p,1,newINTEGER(2));
     display(p,"items: ");
