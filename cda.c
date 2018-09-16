@@ -63,8 +63,6 @@ static bool isFull(CDA * items) {
 }
 
 static int correctIndex(CDA *items, int oldIndex) {
-  //printf("FIXME: in correctIndex(), cap = %d\n", getCapacityCDA(items));
-  //mprintf("FIXME: in correctIndex(), oldIndex = %d\n", oldIndex);
   int index = (oldIndex + getCapacityCDA(items)) % getCapacityCDA(items);
   return index;
 }
@@ -76,43 +74,26 @@ extern void insertCDA(CDA *items, int index, void *value) {
   assert(index >= 0 && index <= sizeCDA(items));
   if (isFull(items) == true) { doubleArray(items); }
   if (index == 0) { // insert at front of CDA
-    printf("FIXME: inserting at index 0\n");
-    //printf("FIXME: Start index was = %d\n", getStartCDA(items));
-
     items->startIndex = correctIndex(items, getStartCDA(items) - 1);
-    //printf("FIXME: Start index now = %d\n", getStartCDA(items));
-
     items->storage[getStartCDA(items)] = value;
     items->size += 1;
   }
   else if (sizeCDA(items) == 0 || index == sizeCDA(items)) {
-    printf("FIXME: inserting at back of array, true index = %d\n",
-    correctIndex(items, getEndCDA(items) + 1));
-
-    //printf("FIXME: End index was = %d\n", getEndCDA(items));
-
-    items->storage[getEndCDA(items)] = value;
     items->endIndex = correctIndex(items, getEndCDA(items) + 1);
+    items->storage[getEndCDA(items)] = value;
 
-    //printf("FIXME: End index now = %d\n", getEndCDA(items));
     items->size += 1;
   }
   else { // insert in the middle of the CDA
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for insertion
     int trueIndex = correctIndex(items, index);
-
-    printf("FIXME: inserting in middle of array, true index = %d\n", trueIndex);
-    printf("FIXME: decision point = %d\n", decisionPt);
     if (trueIndex <= decisionPt) { // shift left, possibly FIXME
-      printf("FIXME: Shifting left\n");
       memmove(&items->storage[trueIndex], &items->storage[trueIndex + 1], (
       sizeCDA(items) - trueIndex - 1) * sizeof(items));
 
       items->storage[trueIndex] = value;
     }
     else { // shift right, possibly FIXME
-      printf("FIXME: Shifting right\n");
-      //for (int i = sizeCDA(items); i >= trueIndex + 1; i--) { items->storage[i] = items->storage[i - 1]; }
       memmove(&items->storage[trueIndex + 1], &items->storage[trueIndex],
       (sizeCDA(items) - trueIndex - 1) * sizeof(items));
 
@@ -123,16 +104,18 @@ extern void insertCDA(CDA *items, int index, void *value) {
 }
 
 static void doubleArray(CDA * items) {
-  //printf("FIXME: doubling array\n");
   int newCap = items->capacity * 2;
   void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
-  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
+  for (int i = 0; i < sizeCDA(items); i++) {
+    //items->displayMethod(getCDA(items, i), stdout);
+    temp[i] = getCDA(items, i);
+  }
   items->storage = temp;
   items->startIndex = 0;
-  items->endIndex = sizeCDA(items) - 1;
+  items->endIndex = sizeCDA(items) - 1; //FIXME maybe
   items->capacity = newCap;
-  //printf("FIXME: new cap = %d\n", getCapacityCDA(items));
+  free(temp);
 }
 
 static void halveArray(CDA * items) {
@@ -220,9 +203,7 @@ extern void unionCDA(CDA *recipient, CDA *donor) {
 // and the internal view (where the first item can be anywhere in the underlying array)
 extern void *getCDA(CDA *items, int index) {
   assert(index >= 0 && index < sizeCDA(items));
-  //printf("FIXME: In getCDA(), start index = %d\n", getStartCDA(items));
   int trueIndex = correctIndex(items, index + getStartCDA(items));
-  //printf("FIXME: In getCDA(), new index = %d\n", trueIndex);
   return items->storage[trueIndex];
 }
 
@@ -256,7 +237,16 @@ static int getCapacityCDA(CDA * items) { return items->capacity; }
 
 // FIXME
 extern void displayCDA(CDA *items, FILE *fp) {
-  if (sizeCDA(items) == 0) {
+  items->displayMethod(items->storage[0], fp);
+  items->displayMethod(items->storage[1], fp);
+  //items->displayMethod(items->storage[2], fp);
+  //items->displayMethod(items->storage[3], fp);
+  //items->displayMethod(getCDA(items, 0), fp);
+  //items->displayMethod(getCDA(items, 1), fp);
+  //items->displayMethod(getCDA(items, 2), fp);
+  //items->displayMethod(getCDA(items, 3), fp);
+}
+  /*if (sizeCDA(items) == 0) {
     printf("Size = 0\n");
     if (items->debugVal > 0) { fprintf(fp, "((%d))", items->capacity); } // empty array and method should display num. empty indeces
     else { fprintf(fp, "()"); } // empty array and method should not display num. empty indeces
@@ -301,7 +291,7 @@ extern void displayCDA(CDA *items, FILE *fp) {
       fprintf(fp, ")");
     }
   }
-}
+}*/
 
 extern int debugCDA(CDA *items, int level) {
   int prevVal = items->debugVal;
