@@ -17,6 +17,7 @@
 
 typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in queue struct
 typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in queue struct
+static int getIndex(CDA * items, int oldIndex);
 
 struct cda {
   void * (*storage);
@@ -81,7 +82,7 @@ extern void displayQUEUE(QUEUE *items,FILE *fp) {
     if (items->displayMethod == 0) {
       fprintf(fp, "<");
       for (int i = 0; i < sizeQUEUE(items); i++) {
-        fprintf(fp, "@%p,", &items->array->storage[correctIndex(items, i)]);
+        fprintf(fp, "@%p,", &items->array->storage[getIndex(items->array, i)]);
         if (i != sizeQUEUE(items) - 1) { fprintf(fp, ","); }
       }
       fprintf(fp, ">");
@@ -124,3 +125,8 @@ extern void freeQUEUE(QUEUE *items) {
 
 
 extern int sizeQUEUE(QUEUE *items) { return sizeCDA(items->array); }
+
+static int getIndex(CDA * items, int oldIndex) {
+  int trueIndex = (oldIndex + items->capacity) % items->capacity;
+  return trueIndex;
+}
