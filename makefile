@@ -1,7 +1,7 @@
 OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
 #DAOBJS = da.o da-test2.o integer.o
-CDAOBJS = cda.o test-cda3.o integer.o
+CDAOBJS = cda.o test-cda4.o integer.o
 #STACKOBJS = stack.o da.o stack-test.o integer.o
 QOBJS = queue.o cda.o queue-test.o integer.o
 
@@ -27,8 +27,8 @@ queue.o : queue.c queue.h cda.h
 	gcc $(OOPTS) queue.c
 #da-test2.o : da-test2.c da.h
 	#gcc $(OOPTS) da-test2.c
-test-cda3.o : test-cda3.c cda.h
-	gcc $(OOPTS) test-cda3.c
+test-cda4.o : test-cda4.c cda.h
+	gcc $(OOPTS) test-cda4.c
 #stack-test.o : stack-test.c stack.h da.h
 	#gcc $(OOPTS) stack-test.c
 queue-test.o : queue-test.c queue.h cda.h

@@ -37,7 +37,7 @@ struct queue {
 };
 
 extern QUEUE *newQUEUE(void) {
-  QUEUE * queue  malloc(sizeof(QUEUE));
+  QUEUE * queue = malloc(sizeof(QUEUE));
   assert(queue != 0);
   queue->array = newCDA();
   assert(queue->array != 0);
@@ -81,7 +81,7 @@ extern void displayQUEUE(QUEUE *items,FILE *fp) {
     if (items->displayMethod == 0) {
       fprintf(fp, "<");
       for (int i = 0; i < sizeQUEUE(items); i++) {
-        fprintf(fp, "@%p,", &items->storage[getIndex(items, i)]);
+        fprintf(fp, "@%p,", &items->array->storage[getIndex(items, i)]);
         if (i != sizeQUEUE(items) - 1) { fprintf(fp, ","); }
       }
       fprintf(fp, ">");
@@ -96,7 +96,7 @@ extern void displayQUEUE(QUEUE *items,FILE *fp) {
     }
   }
   else if (items->debugVal == 1) { // use CDA display method
-    debugDCA(items->array, 0);
+    debugCDA(items->array, 0);
     setCDAdisplay(items->array, items->displayMethod);
     displayCDA(items->array, fp);
   }
