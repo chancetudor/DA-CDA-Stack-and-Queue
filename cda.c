@@ -266,7 +266,7 @@ extern void displayCDA(CDA *items, FILE *fp) {
       fprintf(fp, "(");
       for (int i = 0; i < sizeCDA(items); i++) {
         items->displayMethod(getCDA(items, i), fp);
-        if (i != (sizeCDA(items) - 1)) { fprintf(fp, ","); }
+        if (i != (sizeCDA(items))) { fprintf(fp, ","); }
       }
       fprintf(fp, "(%d))", (getCapacityCDA(items) - sizeCDA(items)));
     }
