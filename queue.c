@@ -59,22 +59,68 @@ extern void setQUEUEfree(QUEUE *items, void (*freeMeth)(void *ptr)) {
 }
 
 
-extern void enqueue(QUEUE *items, void *value);
+extern void enqueue(QUEUE *items, void *value) {
+  insertCDAback(items->array, value);
+}
 
 
-extern void *dequeue(QUEUE *items);
+extern void *dequeue(QUEUE *items) {
+  void * temp = removeCDAfront(items->array);
+  return temp;
+}
 
 
-extern void *peekQUEUE(QUEUE *items);
+extern void *peekQUEUE(QUEUE *items) {
+  void * temp = getCDA(items->array, 0);
+  return temp;
+}
 
 
-extern void displayQUEUE(QUEUE *items,FILE *fp);
+extern void displayQUEUE(QUEUE *items,FILE *fp) {
+  if (items->debugVal == 0) { // use QUEUE display method
+    if (items->displayMethod == 0) {
+      fprintf(fp, "<");
+      for (int i = 0; i < sizeQUEUE(items); i++) {
+        fprintf(fp, "@%p,", &items->storage[getIndex(items, i)]);
+        if (i != sizeQUEUE(items) - 1) { fprintf(fp, ","); }
+      }
+      fprintf(fp, ">");
+    }
+    else {
+      fprintf(fp, "<");
+      for (int i = 0; i < sizeQUEUE(items); i++) {
+        items->displayMethod(getCDA(items->array, i), fp);
+        if (i != sizeQUEUE(items) - 1) { fprintf(fp, ","); }
+      }
+      fprintf(fp, ">");
+    }
+  }
+  else if (items->debugVal == 1) { // use CDA display method
+    debugDCA(items->array, 0);
+    setCDAdisplay(items->array, items->displayMethod);
+    displayCDA(items->array, fp);
+  }
+  else { // use CDA display method w/ debugVal > 0
+    debugCDA(items->array, 1);
+    setCDAdisplay(items->array, items->displayMethod);
+    displayCDA(items->array, fp);
+  }
+}
 
 
-extern int debugQUEUE(QUEUE *items, int level);
+extern int debugQUEUE(QUEUE *items, int level) {
+  int prevVal = items->debugVal;
+  items->debugVal = level;
+
+  return prevVal;
+}
 
 
-extern void freeQUEUE(QUEUE *items);
+extern void freeQUEUE(QUEUE *items) {
+  setCDAfree(items->array, items->freeMethod);
+  freeCDA(items->array);
+  free(items);
+}
 
 
-extern int sizeQUEUE(QUEUE *items);
+extern int sizeQUEUE(QUEUE *items) { return sizeCDA(items->array); }
