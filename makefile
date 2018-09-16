@@ -1,5 +1,5 @@
-OOPTS = -g -std=c99 -Wall -Wextra -c
-LOPTS = -g -std=c99 -Wall -Wextra
+OOPTS = -g3 -std=c99 -Wall -Wextra -c
+LOPTS = -g3 -std=c99 -Wall -Wextra
 #DAOBJS = da.o da-test2.o integer.o
 CDAOBJS = cda.o test-cda4.o integer.o
 
