@@ -36,7 +36,7 @@ main(void)
     setQUEUEfree(p,freeINTEGER);
     setQUEUEdisplay(p,displayINTEGER);
     display(p,"items: ");
-    for (i = 0; i < 3; ++i)
+    for (i = 0; i < 10000; ++i)
         {
         enqueue(p,newINTEGER(3));
         enqueue(p,newINTEGER(2));
