@@ -76,7 +76,7 @@ extern void insertCDA(CDA *items, int index, void *value) {
   if (isFull(items) == true) { doubleArray(items); }
 
   if (index == 0) { // insert at front of CDA
-    items->startIndex = correctIndex(items, getStartCDA(items) - 1); // don't decrement
+    items->startIndex = correctIndex(items, getStartCDA(items) - 1);
     items->storage[getStartCDA(items)] = value;
     items->size += 1;
   }
@@ -107,30 +107,23 @@ extern void insertCDA(CDA *items, int index, void *value) {
 }
 
 static void doubleArray(CDA * items) {
-  printf("doubling\n");
   int newCap = items->capacity * 2;
   void * (*temp) = malloc(sizeof(void *) * newCap);
   assert(temp != 0);
-  printf("Size = %d\n", sizeCDA(items));
-  for (int i = 0; i < sizeCDA(items); i++) {
-    temp[i] = getCDA(items, i);
-  }
+  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
   free(items->storage);
   items->storage = temp;
   free(temp);
   items->startIndex = 0;
   items->endIndex = sizeCDA(items);
   items->capacity = newCap;
-  printf("New capacity = %d\n", getCapacityCDA(items));
 }
 
 static void halveArray(CDA * items) {
   int newCap = items->capacity / 2;
   void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
-  for (int i = 0; i < sizeCDA(items); i++) {
-    temp[i] = getCDA(items, i);
-  }
+  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
   free(items->storage);
   items->storage = temp;
   free(temp);
