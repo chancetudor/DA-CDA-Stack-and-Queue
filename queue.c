@@ -66,12 +66,14 @@ extern void enqueue(QUEUE *items, void *value) {
 
 
 extern void *dequeue(QUEUE *items) {
+  assert(sizeQUEUE(items) > 0);
   void * temp = removeCDAfront(items->array);
   return temp;
 }
 
 
 extern void *peekQUEUE(QUEUE *items) {
+  assert(sizeQUEUE(items) > 0);
   void * temp = getCDA(items->array, 0);
   return temp;
 }
