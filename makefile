@@ -22,5 +22,5 @@ test : test-da
 	./test-da
 valgrind : test-da
 	valgrind --leak-check=full ./test-da
-clean : 
+clean :
 	rm -f $(OBJS) $(CDAOBJS) test-da test-cda
