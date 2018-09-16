@@ -15,18 +15,51 @@
 #include "queue.h"
 #include "cda.h"
 
+typedef void (*FM)(void * ptr); // typedef declaration to store a freeMethod function pointer in queue struct
+typedef void (*DM)(void * ptr, FILE *fp); // typedef declaration to store a displayMethod function pointer in queue struct
+
+struct cda {
+  void * (*storage);
+  int capacity;
+  int size;
+  int startIndex;
+  int endIndex;
+  int debugVal;
+  FM freeMethod;
+  DM displayMethod;
+};
+
+struct queue {
+  CDA * array;
+  int debugVal;
+  FM freeMethod;
+  DM displayMethod;
+};
+
+extern QUEUE *newQUEUE(void) {
+  QUEUE * queue  malloc(sizeof(QUEUE));
+  assert(queue != 0);
+  queue->array = newCDA();
+  assert(queue->array != 0);
+  queue->debugVal = 0;
+  queue->freeMethod = 0;
+  queue->displayMethod = 0;
+
+  return queue;
+}
 
 
-extern QUEUE *newQUEUE(void);
+extern void setQUEUEdisplay(QUEUE *items, void (*displayMeth)(void * ptr, FILE *fp)) {
+  items->displayMethod = displayMeth;
+}
 
 
-extern void setQUEUEdisplay(QUEUE *,void (*)(void *,FILE *));
+extern void setQUEUEfree(QUEUE *items, void (*freeMeth)(void *ptr)) {
+  items->freeMethod = freeMeth;
+}
 
 
-extern void setQUEUEfree(QUEUE *,void (*)(void *));
-
-
-extern void enqueue(QUEUE *items,void *value);
+extern void enqueue(QUEUE *items, void *value);
 
 
 extern void *dequeue(QUEUE *items);
@@ -38,7 +71,7 @@ extern void *peekQUEUE(QUEUE *items);
 extern void displayQUEUE(QUEUE *items,FILE *fp);
 
 
-extern int debugQUEUE(QUEUE *items,int level);
+extern int debugQUEUE(QUEUE *items, int level);
 
 
 extern void freeQUEUE(QUEUE *items);
