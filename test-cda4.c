@@ -49,32 +49,8 @@ main(void)
     debugCDA(p,1);
 
     display(p,"items: ");
-    insertCDA(p,0,newINTEGER(3));
 
-    insertCDA(p,1,newINTEGER(2));
-
-    //insertCDA(p,0,newINTEGER(4));
-
-    //insertCDA(p,3,newINTEGER(1));
-
-    //insertCDA(p,0,newINTEGER(7));
-
-    display(p,"items: ");
-
-    //debugCDA(p,0);
-
-    //insertCDA(p,0,newINTEGER(3));
-
-    /*insertCDA(p,1,newINTEGER(2));
-    display(p,"items: ");
-
-    insertCDA(p,0,newINTEGER(4));
-    display(p,"items: ");
-
-    insertCDA(p,4,newINTEGER(1));
-    display(p,"items: ");
-    display(p,"items: ");*/
-    /*for (i = 0; i < 2; ++i)
+    for (i = 0; i < 2; ++i)
         {
         insertCDA(p,0,newINTEGER(3));
         insertCDA(p,1,newINTEGER(2));
@@ -92,6 +68,6 @@ main(void)
     freeINTEGER(removeCDA(p,0));
     display(p,"items: ");
     printf("size: %d\n",sizeCDA(p));
-    freeCDA(p);*/
+    freeCDA(p);
     return 0;
     }
