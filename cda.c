@@ -63,7 +63,8 @@ static bool isFull(CDA * items) {
 }
 
 static int correctIndex(CDA *items, int oldIndex) {
-  //printf("FIXME: in correctIndex(), cap = %d\n", getCapacityCDA(items));
+  printf("FIXME: in correctIndex(), cap = %d\n", getCapacityCDA(items));
+  printf("FIXME: in correctIndex(), oldIndex = %d\n", oldIndex);
   int index = (oldIndex + getCapacityCDA(items)) % getCapacityCDA(items);
   return index;
 }
@@ -219,7 +220,9 @@ extern void unionCDA(CDA *recipient, CDA *donor) {
 // and the internal view (where the first item can be anywhere in the underlying array)
 extern void *getCDA(CDA *items, int index) {
   assert(index >= 0 && index < sizeCDA(items));
+  //printf("FIXME: In getCDA(), start index = %d\n", getStartCDA(items));
   int trueIndex = correctIndex(items, index + getStartCDA(items));
+  //printf("FIXME: In getCDA(), new index = %d\n", trueIndex);
   return items->storage[trueIndex];
 }
 
@@ -289,6 +292,7 @@ extern void displayCDA(CDA *items, FILE *fp) {
     }
     else { // display method set and method should not display num. empty indeces
       printf("Display method set, not displaying num. empty indeces\n");
+      printf("Size = %d\n", sizeCDA(items));
       fprintf(fp, "(");
       for (int i = 0; i < sizeCDA(items); i++) {
         items->displayMethod(getCDA(items, i), fp);
