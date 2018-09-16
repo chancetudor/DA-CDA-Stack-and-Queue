@@ -237,8 +237,11 @@ static int getCapacityCDA(CDA * items) { return items->capacity; }
 
 // FIXME
 extern void displayCDA(CDA *items, FILE *fp) {
+  printf("Start index = %d, value in 0: ", getStartCDA(items));
   items->displayMethod(items->storage[0], fp);
+  printf("\nStart index = %d, value in 1: ", getStartCDA(items));
   items->displayMethod(items->storage[1], fp);
+  //printf("Start index = %d: ", getStartCDA(items));
   //items->displayMethod(items->storage[2], fp);
   //items->displayMethod(items->storage[3], fp);
   //items->displayMethod(getCDA(items, 0), fp);
