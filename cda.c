@@ -63,8 +63,8 @@ static bool isFull(CDA * items) {
 }
 
 static int correctIndex(CDA *items, int oldIndex) {
-  printf("FIXME: in correctIndex(), cap = %d\n", getCapacityCDA(items));
-  printf("FIXME: in correctIndex(), oldIndex = %d\n", oldIndex);
+  //printf("FIXME: in correctIndex(), cap = %d\n", getCapacityCDA(items));
+  //printf("FIXME: in correctIndex(), oldIndex = %d\n", oldIndex);
   int index = (oldIndex + getCapacityCDA(items)) % getCapacityCDA(items);
   return index;
 }

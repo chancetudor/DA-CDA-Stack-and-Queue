@@ -48,30 +48,19 @@ main(void)
     setCDAdisplay(p,displayINTEGER);
     debugCDA(p,1);
     display(p,"items: ");
-    printf("Inserting now\n");
     for (i = 0; i < 2; ++i)
         {
-        printf("Round %d\n", i);
         insertCDA(p,0,newINTEGER(3));
-        //display(p,"items: ");
         insertCDA(p,1,newINTEGER(2));
-        //display(p,"items: ");
         insertCDA(p,0,newINTEGER(4));
-        //display(p,"items: ");
         insertCDA(p,3+i,newINTEGER(1));
         display(p,"items: ");
         debugCDA(p,0);
         }
-    printf("Insertion finished\n");
-    display(p,"items: ");
-    printf("Freeing integer\n");
     freeINTEGER(removeCDA(p,1));
-    printf("Integer freed\n");
     display(p,"items: ");
-    printf("Freeing integer\n");
     freeINTEGER(removeCDA(p,sizeCDA(p)-1));
     display(p,"items: ");
-    printf("Freeing integer\n");
     freeINTEGER(removeCDA(p,0));
     display(p,"items: ");
     freeINTEGER(removeCDA(p,0));
