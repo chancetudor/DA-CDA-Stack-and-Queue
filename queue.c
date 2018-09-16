@@ -81,7 +81,7 @@ extern void displayQUEUE(QUEUE *items,FILE *fp) {
     if (items->displayMethod == 0) {
       fprintf(fp, "<");
       for (int i = 0; i < sizeQUEUE(items); i++) {
-        fprintf(fp, "@%p,", &items->array->storage[getIndex(items, i)]);
+        fprintf(fp, "@%p,", &items->array->storage[correctIndex(items, i)]);
         if (i != sizeQUEUE(items) - 1) { fprintf(fp, ","); }
       }
       fprintf(fp, ">");
