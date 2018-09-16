@@ -108,7 +108,6 @@ static void doubleArray(CDA * items) {
   void * (*temp) = malloc(sizeof(void*) * newCap);
   assert(temp != 0);
   for (int i = 0; i < sizeCDA(items); i++) {
-    //items->displayMethod(getCDA(items, i), stdout);
     temp[i] = getCDA(items, i);
   }
   items->storage = temp;
