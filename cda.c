@@ -63,7 +63,7 @@ static bool isFull(CDA * items) {
 }
 
 static int correctIndex(CDA *items, int oldIndex) {
-  int index = (oldIndex + getCapacityCDA(items) + items->startIndex) % getCapacityCDA(items);
+  int index = (oldIndex + getCapacityCDA(items) + getStartCDA(items)) % getCapacityCDA(items);
   return index;
 }
 
@@ -182,9 +182,9 @@ extern void *removeCDA(CDA * items, int index) {
 
   if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
     halveArray(items);
-    //if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
-      //halveArray(items);
-    //}
+    if ((sizeCDA(items)/(double)getCapacityCDA(items)) < .25) {
+      halveArray(items);
+    }
   }
 
   return value;
@@ -217,20 +217,19 @@ extern void *getCDA(CDA *items, int index) {
 extern void *setCDA(CDA *items, int index, void *value) {
   assert(index >= -1 && index <= sizeCDA(items));
   int trueIndex = correctIndex(items, index);
-  void * val = getCDA(items, trueIndex);
   if (index == sizeCDA(items)) {
     insertCDAback(items, value);
-    return val;
+    return 0; /*val;*/
   }
   else if (index == -1) {
     insertCDAfront(items, value);
-    return val;
+    return 0; /*val;*/
   }
   else {
+    void * val = getCDA(items, trueIndex);
     items->storage[trueIndex] = value;
+    return val;
   }
-
-  return val;
 }
 
 // method returns the size of array
