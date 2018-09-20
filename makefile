@@ -1,6 +1,8 @@
+TESTDIR = testing/
+TESTS = $(sort $(basename $(notdir $(wildcard $(TESTDIR)*.c))))
 OOPTS = -g -std=c99 -Wall -Wextra -c
 LOPTS = -g -std=c99 -Wall -Wextra
-DAOBJS = da.o da-0-4.o integer.o real.o string.o
+DAOBJS = da.o da-0-9.o integer.o real.o string.o
 #CDAOBJS = cda.o test-cda.o integer.o
 
 all : da #cda
@@ -19,8 +21,8 @@ da.o : da.c da.h
 	gcc $(OOPTS) da.c
 #cda.o : cda.c cda.h
 	#gcc $(OOPTS) cda.c
-da-0-4.o : da.c da.h
-	gcc $(OOPTS) da-0-4.c
+da-0-9.o : da.c da.h
+	gcc $(OOPTS) da-0-9.c
 #test-cda.o : test-cda.c cda.h
 	#gcc $(OOPTS) test-cda.c
 test : da #cda
