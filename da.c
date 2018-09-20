@@ -53,7 +53,7 @@ extern void setDAfree(DA * items, void (*freeMeth)(void * ptr)) { items->freeMet
 // array doubles if there is no room for insertion
 extern void insertDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); } // FIXME: possible memory leak
+  if (getCapacityDA(items) == sizeDA(items)) { doubleArray(items); }
   if (index == sizeDA(items)) {
     items->storage[index] = value;
     items->size += 1;
@@ -109,7 +109,7 @@ extern void unionDA(DA * recipient, DA * donor) {
 
 // method returns the value at the given index
 extern void * getDA(DA * items, int index) {
-  assert(index >= 0 && index <= sizeDA(items)); // added <= sizeDA(items), but may not fit project spec
+  assert(index >= 0 && index < sizeDA(items)); // <= sizeDA(items) may not fit project spec
   return items->storage[index];
 }
 
@@ -117,12 +117,12 @@ extern void * getDA(DA * items, int index) {
 // method returns null ptr if no value is replaced
 extern void * setDA(DA * items, int index, void * value) {
   assert(index >= 0 && index <= sizeDA(items));
-  void * oldVal = getDA(items, index);
   if (index == sizeDA(items)) {
     insertDA(items, index, value);
     return 0;
   }
   else {
+    void * oldVal = getDA(items, index);
     items->storage[index] = value;
     return oldVal;
   }

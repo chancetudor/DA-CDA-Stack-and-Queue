@@ -43,7 +43,7 @@ main(void)
     {
     srandom(5);
     int i,r,rounds=2,size=20;
-    printf("INTEGER test of DA, insertions at the tail\n");
+    printf("INTEGER test 1 of DA, insertions at the tail\n");
     DA *p = newDA();
     setDAdisplay(p,displayINTEGER);
     setDAfree(p,freeINTEGER);
@@ -54,15 +54,67 @@ main(void)
         for (i = 0; i < size; ++i)
             {
             int j = random() % size;
-            if (random() % 2 == 0)
+            if (random() % 2 == 0) {
                 insertDA(p,sizeDA(p),newINTEGER(j));
-            else
+              }
+            else {
                 assert(setDA(p,sizeDA(p),newINTEGER(j)) == 0);
-            }
+              }
+        }
         display(p,"items: ");
         printf("size is %d\n",sizeDA(p));
         }
     assert(debugDA(p,0) == 1);
     freeDA(p);
+// -----------------------------------------------------------------------------
+    srandom(10);
+    rounds=2;
+    size=1993;
+    printf("INTEGER test 2 of DA, insertions at the tail\n");
+    DA *y = newDA();
+    setDAdisplay(p,displayINTEGER);
+    setDAfree(p,freeINTEGER);
+    debugDA(y,1);
+    display(y,"items: ");
+    for (r = 0; r < rounds; ++r)
+        {
+        for (i = 0; i < size; ++i)
+            {
+            int j = random() % size;
+            if (random() % 2 == 0)
+                insertDA(y,sizeDA(y),newINTEGER(j));
+            else
+                assert(setDA(y,sizeDA(y),newINTEGER(j)) == 0);
+            }
+        display(p,"items: ");
+        printf("size is %d\n",sizeDA(y));
+        }
+    assert(debugDA(y,0) == 1);
+    freeDA(y);
+// -----------------------------------------------------------------------------
+    srandom(15);
+    rounds=2;
+    size=148836;
+    printf("INTEGER test 3 of DA, insertions at the tail\n");
+    DA *z = newDA();
+    setDAdisplay(z,displayINTEGER);
+    setDAfree(z,freeINTEGER);
+    debugDA(z,1);
+    display(z,"items: ");
+    for (r = 0; r < rounds; ++r)
+        {
+        for (i = 0; i < size; ++i)
+            {
+            int j = random() % size;
+            if (random() % 2 == 0)
+                insertDA(z,sizeDA(z),newINTEGER(j));
+            else
+                assert(setDA(z,sizeDA(z),newINTEGER(j)) == 0);
+            }
+        display(z,"items: ");
+        printf("size is %d\n",sizeDA(z));
+        }
+    assert(debugDA(z,0) == 1);
+    freeDA(z);
     return 0;
     }
