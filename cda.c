@@ -217,11 +217,11 @@ extern void *setCDA(CDA *items, int index, void *value) {
   int trueIndex = correctIndex(items, index);
   if (index == sizeCDA(items)) {
     insertCDAback(items, value);
-    return 0; /*val;*/
+    return 0;
   }
   else if (index == -1) {
     insertCDAfront(items, value);
-    return 0; /*val;*/
+    return 0;
   }
   else {
     void * val = getCDA(items, trueIndex);
