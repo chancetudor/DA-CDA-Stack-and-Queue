@@ -67,6 +67,39 @@ static int correctIndex(CDA *items, int oldIndex) {
   return index;
 }
 
+static void doubleArray(CDA * items) {
+  int newCap = items->capacity * 2;
+  void * (*temp) = malloc(sizeof(void *) * newCap);
+  assert(temp != 0);
+  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
+  free(items->storage);
+  items->storage = temp;
+  items->startIndex = 0;
+  items->endIndex = sizeCDA(items);
+  items->capacity = newCap;
+}
+
+static void halveArray(CDA * items) {
+  int newCap = items->capacity / 2;
+  void * (*temp) = malloc(sizeof(void*) * newCap);
+  assert(temp != 0);
+  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
+  free(items->storage);
+  items->storage = temp;
+  items->startIndex = 0;
+  items->endIndex = sizeCDA(items);
+  items->capacity = newCap;
+}
+
+static int getStartCDA(CDA * items) { return items->startIndex; }
+
+static int getEndCDA(CDA * items) { return items->endIndex; }
+
+static int getIndex(CDA * items, int oldIndex) {
+  int trueIndex = correctIndex(items, oldIndex);
+  return trueIndex;
+}
+
 // places value in slot named by given index
 // previous item at that slot shifts to the next higher slot (and so on)
 // if no room for insertion, array grows by doubling
@@ -109,39 +142,6 @@ extern void insertCDA(CDA *items, int index, void *value) {
   }
 }
 
-static void doubleArray(CDA * items) {
-  int newCap = items->capacity * 2;
-  void * (*temp) = malloc(sizeof(void *) * newCap);
-  assert(temp != 0);
-  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
-  free(items->storage);
-  items->storage = temp;
-  items->startIndex = 0;
-  items->endIndex = sizeCDA(items);
-  items->capacity = newCap;
-}
-
-static void halveArray(CDA * items) {
-  int newCap = items->capacity / 2;
-  void * (*temp) = malloc(sizeof(void*) * newCap);
-  assert(temp != 0);
-  for (int i = 0; i < sizeCDA(items); i++) { temp[i] = getCDA(items, i); }
-  free(items->storage);
-  items->storage = temp;
-  items->startIndex = 0;
-  items->endIndex = sizeCDA(items);
-  items->capacity = newCap;
-}
-
-static int getStartCDA(CDA * items) { return items->startIndex; }
-
-static int getEndCDA(CDA * items) { return items->endIndex; }
-
-static int getIndex(CDA * items, int oldIndex) {
-  int trueIndex = correctIndex(items, oldIndex);
-  return trueIndex;
-}
-
 // removes and returns the item named by the given index
 // item at the next higher slot shifts to that slot (and so on)
 // if ratio of size to capacity < .25 array shrinks by half
@@ -149,7 +149,6 @@ static int getIndex(CDA * items, int oldIndex) {
 extern void *removeCDA(CDA * items, int index) {
   assert(index >= 0 && index <= sizeCDA(items) - 1);
   assert(sizeCDA(items) > 0);
-  int trueIndex = correctIndex(items, index);
   void * value = getCDA(items, index);
 
   if (index == 0) {
@@ -158,12 +157,11 @@ extern void *removeCDA(CDA * items, int index) {
   }
   else if (index == sizeCDA(items) - 1) {
     items->endIndex = (items->endIndex - 1 + items->capacity) % items->capacity;
-    //items->endIndex = correctIndex(items, getEndCDA(items) - 1);
     items->size -= 1;
   }
   else {
     int decisionPt = sizeCDA(items) / 2; // determines whether array shifts left or right for removal
-    if (trueIndex <= decisionPt) { // shift right
+    if (index <= decisionPt) { // shift right
       for (int i = index; i > 0; i--) {
         items->storage[correctIndex(items, i)] = items->storage[correctIndex(items, i - 1)];
       }
